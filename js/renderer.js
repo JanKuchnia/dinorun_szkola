@@ -8,6 +8,52 @@ class Renderer {
     this._shakeIntensity = 0;
     this._flashFrames  = 0;
     this._flashColor   = 'rgba(255,255,255,0.5)';
+    this._initSprites();
+  }
+
+  _initSprites() {
+    this.sprites = {};
+    for (let i = 0; i < SKINS.length; i++) {
+        const skinInfo = SKINS[i];
+        const template = skinInfo.id === 'dino' ? SPRITE_MAPS.dino : SPRITE_MAPS.human;
+        this.sprites[i] = {
+           run1: this._renderSpriteMap(template.run1, skinInfo.colors),
+           run2: this._renderSpriteMap(template.run2, skinInfo.colors),
+           duck: this._renderSpriteMap(template.duck, skinInfo.colors)
+        };
+    }
+  }
+
+  _renderSpriteMap(map, colors) {
+    const c = document.createElement('canvas');
+    c.width = PLAYER_W;
+    c.height = PLAYER_H;
+    const ctx = c.getContext('2d');
+    
+    for (let row = 0; row < 18; row++) {
+      if (!map[row]) continue;
+      for (let col = 0; col < 14; col++) {
+        const char = map[row][col] || ' ';
+        if (char === ' ') continue;
+        
+        let fill = '';
+        switch(char) {
+          case 'D': fill = '#1a1a1a'; break;
+          case 'B': fill = colors.body; break;
+          case 'P': fill = colors.pants || colors.body; break;
+          case '+': fill = colors.skin  || colors.body; break;
+          case '^': fill = colors.hair  || colors.body; break;
+          case 'E': fill = colors.extra || colors.body; break;
+          case 'O': fill = '#111'; break;
+          case 'S': fill = '#fff'; break;
+        }
+        if (fill) {
+           ctx.fillStyle = fill;
+           ctx.fillRect(col * 4, row * 4, 4, 4);
+        }
+      }
+    }
+    return c;
   }
 
   // ── Screen FX ──────────────────────────────────────────────────────────────
@@ -49,6 +95,12 @@ class Renderer {
   // ── Player ─────────────────────────────────────────────────────────────────
   drawPlayer(player) {
     const { x, y, w, h, skinIndex, state, frame, powerups } = player;
+
+    // Blink effect if invulnerable
+    if (player._invulnerableTimer > 0 && Math.floor(frame / 4) % 2 === 0) {
+      return;
+    }
+
     const skin = SKINS[skinIndex].colors;
     const ctx  = this.ctx;
     const isDucking = state === 'DUCKING';
@@ -68,9 +120,30 @@ class Renderer {
     }
 
     if (isDucking) {
-      this._drawPlayerDucking(x, y + h - PLAYER_DUCK_H, w, PLAYER_DUCK_H, skin, frame);
+      const sprite = this.sprites[skinIndex].duck;
+      // duck sprite is drawn at ground level
+      ctx.drawImage(sprite, x, y + h - PLAYER_DUCK_H - (PLAYER_H - PLAYER_DUCK_H));
     } else {
-      this._drawPlayerRunning(x, y, w, h, skin, frame, powerups);
+      const legCycle = Math.floor(frame * 0.15) % 2 === 0;
+      const sprite = legCycle ? this.sprites[skinIndex].run1 : this.sprites[skinIndex].run2;
+      
+      // --- Wings ---
+      if (powerups.wings) {
+        const wy = y + 16;
+        const flap = Math.sin(frame * 0.4) * 4;
+        ctx.fillStyle = '#ecf0f1';
+        ctx.strokeStyle = '#1a1a1a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x + 12, wy);
+        ctx.lineTo(x - 16, wy - 10 + flap);
+        ctx.lineTo(x - 4,  wy + 14);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      ctx.drawImage(sprite, x, y);
     }
 
     ctx.restore();
@@ -78,72 +151,19 @@ class Renderer {
     // shield bubble
     if (powerups.shield) {
       ctx.save();
-      ctx.strokeStyle = 'rgba(52,152,219,0.8)';
+      ctx.strokeStyle = 'rgba(52,152,219,0.9)';
       ctx.lineWidth   = 3;
       ctx.beginPath();
-      ctx.ellipse(x + w/2, y + h/2, w/2 + 8, h/2 + 8, 0, 0, Math.PI*2);
+      // Add slight pulsing to shield
+      const p = Math.sin(frame * 0.1) * 2;
+      ctx.ellipse(x + w/2, y + h/2, w/2 + 8 + p, h/2 + 8 + p, 0, 0, Math.PI*2);
+      ctx.stroke();
+      // Outer glow of the stroke
+      ctx.lineWidth   = 1;
+      ctx.strokeStyle = '#fff';
       ctx.stroke();
       ctx.restore();
     }
-  }
-
-  _drawPlayerRunning(x, y, w, h, skin, frame, powerups) {
-    const ox = x, oy = y;
-    const legCycle = Math.sin(frame * 0.4);
-
-    // --- Wings ---
-    if (powerups && powerups.wings) {
-      const wy = oy + 16;
-      // left wing
-      this.ctx.fillStyle = '#ecf0f1';
-      this.ctx.beginPath();
-      this.ctx.moveTo(ox + 8, wy);
-      this.ctx.lineTo(ox - 14, wy - 10 + legCycle * 4);
-      this.ctx.lineTo(ox,      wy + 14);
-      this.ctx.closePath();
-      this.ctx.fill();
-    }
-
-    // Body
-    this.px(ox+10, oy+20, 28, 32, skin.body);        // torso
-
-    // Head
-    this.px(ox+14, oy+2,  22, 20, skin.skin);         // face
-    this.px(ox+14, oy,    22,  8, skin.hair);          // hair
-
-    // Eyes
-    this.px(ox+22, oy+8,   4,  4, '#222');
-    this.px(ox+30, oy+8,   4,  4, '#222');
-
-    // Arms (swing)
-    const armSwing = Math.round(legCycle * 5);
-    this.px(ox+4,  oy+22+armSwing, 10, 8, skin.body); // left arm
-    this.px(ox+34, oy+22-armSwing, 10, 8, skin.body); // right arm
-
-    // Legs
-    const leg1 = Math.round(legCycle * 10);
-    const leg2 = Math.round(-legCycle * 10);
-    this.px(ox+12, oy+52+leg1,  10, 14, skin.pants);
-    this.px(ox+26, oy+52+leg2,  10, 14, skin.pants);
-
-    // Shoes
-    this.px(ox+10, oy+64+leg1,  14,  8, '#fff');
-    this.px(ox+24, oy+64+leg2,  14,  8, '#fff');
-
-    // Backpack (only for backpack skin style using skin.extra)
-    this.px(ox+36, oy+18, 10, 26, skin.extra);
-  }
-
-  _drawPlayerDucking(x, y, w, h, skin, frame) {
-    const legCycle = Math.sin(frame * 0.4);
-    this.px(x+6,  y,     30, 14, skin.skin);        // head
-    this.px(x+6,  y,     30,  6, skin.hair);         // hair
-    this.px(x+4,  y+14,  34, 18, skin.body);         // body
-    this.px(x+34, y+12,   8, 14, skin.extra);        // back item
-    // legs splayed out
-    const s = Math.round(legCycle * 4);
-    this.px(x,    y+30+s, 20, 10, skin.pants);
-    this.px(x+22, y+30-s, 22, 10, skin.pants);
   }
 
   // ── Obstacles ──────────────────────────────────────────────────────────────
@@ -160,26 +180,51 @@ class Renderer {
   }
 
   _drawRocks(x, y, w, h) {
-    // 3 rocks
+    // Outlines
+    this.px(x-2,  y+12, 26, 34, '#1a1a1a');
+    this.px(x+2,  y+6,  22, 18, '#1a1a1a');
+    this.px(x+18, y+18, 30, 28, '#1a1a1a');
+    this.px(x+22, y+10, 26, 18, '#1a1a1a');
+    this.px(x+38, y+16, 16, 30, '#1a1a1a');
+
+    // Fill
     this.px(x,    y+14, 22, 30, '#7f8c8d');
     this.px(x+4,  y+8,  18, 14, '#95a5a6');
     this.px(x+20, y+20, 26, 24, '#6c7a7d');
     this.px(x+24, y+12, 22, 14, '#8a9a9d');
     this.px(x+40, y+18, 12, 26, '#5d6d7e');
-    // shadows
-    this.px(x+2,  y+h-4, 18, 4, '#5d6d7e');
-    this.px(x+22, y+h-4, 24, 4, '#5d6d7e');
+
+    // Highlights (top/left)
+    this.px(x,    y+14, 10, 4, '#bdc3c7');
+    this.px(x+4,  y+8,   8, 4, '#d0d3d4');
+    this.px(x+20, y+20, 12, 4, '#aab7b8');
+    this.px(x+24, y+12, 10, 4, '#bdc3c7');
+
+    // Shadows (bottom/right)
+    this.px(x+14, y+34,  8, 10, '#5d6d7e');
+    this.px(x+36, y+36, 10,  8, '#5d6d7e');
+    this.px(x+44, y+34,  8, 10, '#34495e');
   }
 
   _drawLog(x, y, w, h) {
-    this.px(x,   y+10, w,   h-10, '#8B4513');   // body
-    this.px(x,   y+10, 12,  h-10, '#A0522D');   // left face
-    this.px(x+w-12, y+10, 12, h-10, '#6B3410'); // right shadow
-    this.px(x+4, y+10,  w-8, 8,   '#A0522D');   // highlight
-    // rings
-    this.px(x+4, y+14, w-8, 2, '#6B3410');
-    this.px(x+4, y+20, w-8, 2, '#6B3410');
-    this.px(x+4, y+26, w-8, 2, '#6B3410');
+    // Outline
+    this.px(x-2, y+8, w+4, h-6, '#1a1a1a');
+
+    // Body
+    this.px(x,   y+10, w,   h-10, '#8B4513');   
+    this.px(x,   y+10, 12,  h-10, '#e67e22'); // left cut face
+    this.px(x+w-16, y+10, 16, h-10, '#5c2d0c'); // right shadow
+    
+    // Highlight
+    this.px(x+12, y+10, w-28, 4, '#d35400');   
+    
+    // Bark rings / grains
+    this.px(x+16, y+16, w-36, 2, '#5c2d0c');
+    this.px(x+24, y+22, w-40, 2, '#5c2d0c');
+    this.px(x+12, y+28, w-32, 2, '#5c2d0c');
+    
+    // Face spiral
+    this.px(x+4, y+14, 4, 4, '#a04000');
   }
 
   _drawTar(x, y, w, h, frame) {
@@ -194,31 +239,34 @@ class Renderer {
 
   _drawPterodactyl(x, y, w, h, frame) {
     const flap = Math.sin(frame * 0.2) > 0;
-    const ctx  = this.ctx;
-    ctx.fillStyle = '#7b6b52';
+    
+    // Outlines (Base shape drawn slightly larger and black)
+    this.px(x+22, y+14, 26, 22, '#1a1a1a'); // body
+    this.px(x+42, y+8,  22, 18, '#1a1a1a'); // head
+    this.px(x+56, y+10, 18, 10, '#1a1a1a'); // beak
+    
+    // Fill
+    this.px(x+24, y+16, 22, 18, '#2ecc71'); // body
+    this.px(x+44, y+10, 18, 14, '#27ae60'); // head
+    this.px(x+58, y+12, 14,  6, '#f1c40f'); // beak
+    
+    // Eye & Highlight
+    this.px(x+50, y+12,  4,  4, '#1a1a1a'); // eye
+    this.px(x+52, y+12,  2,  2, '#fff');    // eye glint
+    this.px(x+26, y+16, 16,  4, '#2ecc71'); // back highlight
 
-    // Body
-    this.px(x+24, y+16, 22, 18, '#7b6b52');
-    // Head
-    this.px(x+44, y+10, 18, 14, '#8b7b62');
-    // Beak
-    this.px(x+58, y+12, 14,  6, '#c8a96e');
-    // Eye
-    this.px(x+50, y+12,  4,  4, '#111');
-
-    // Wings
+    // Wings with outline
     if (flap) {
-      // wings up
-      this.px(x,    y,    26, 16, '#6b5b42');
-      this.px(x+44, y,    24, 16, '#6b5b42');
+      this.px(x-2, y-2, 30, 20, '#1a1a1a');
+      this.px(x+42, y-2, 28, 20, '#1a1a1a');
+      this.px(x,    y,    26, 16, '#27ae60'); // Left Wing
+      this.px(x+44, y,    24, 16, '#2ecc71'); // Right Wing
     } else {
-      // wings down
-      this.px(x,    y+14, 26, 20, '#6b5b42');
-      this.px(x+44, y+14, 24, 20, '#6b5b42');
+      this.px(x-2, y+12, 30, 24, '#1a1a1a');
+      this.px(x+42, y+12, 28, 24, '#1a1a1a');
+      this.px(x,    y+14, 26, 20, '#27ae60');
+      this.px(x+44, y+14, 24, 20, '#2ecc71');
     }
-    // Legs
-    this.px(x+28, y+32,  6, 14, '#7b6b52');
-    this.px(x+36, y+32,  6, 14, '#7b6b52');
   }
 
   _drawVolcano(x, y, w, h, frame) {
@@ -242,15 +290,31 @@ class Renderer {
   }
 
   _drawBones(x, y, w, h) {
+    // Outline
+    this.px(x-2, y+4, 16, 20, '#1a1a1a');
+    this.px(x+w-14, y+4, 16, 20, '#1a1a1a');
+    this.px(x-2, y+16, 14, 18, '#1a1a1a');
+    this.px(x+w-14, y+16, 14, 18, '#1a1a1a');
+    this.px(x-2, y+8, w+4, 12, '#1a1a1a');
+    this.px(x-2, y+20, w+4, 10, '#1a1a1a');
+
     // horizontal bone
-    this.px(x+6,  y+10, w-12, 8, '#f0ead6');
+    this.px(x+6,  y+10, w-12, 8, '#fff');
+    this.px(x+6,  y+14, w-12, 4, '#e0e0e0'); // shadow strip
+
     // end knobs
-    this.px(x,    y+6,  12,  16, '#e8e0cc');
-    this.px(x+w-12, y+6, 12, 16, '#e8e0cc');
+    this.px(x,    y+6,  12,  16, '#fff');
+    this.px(x+w-12, y+6, 12, 16, '#fff');
+    
     // second bone (angled via separate rect)
-    this.px(x+4,  y+22, w-8,  6, '#f0ead6');
-    this.px(x+2,  y+18, 10,  14, '#e8e0cc');
-    this.px(x+w-12, y+18, 10, 14,'#e8e0cc');
+    this.px(x+4,  y+22, w-8,  6, '#fff');
+    this.px(x+2,  y+18, 10,  14, '#fff');
+    this.px(x+w-12, y+18, 10, 14, '#fff');
+    
+    // bottom shadows of knobs
+    this.px(x,    y+18, 12,   4, '#e0e0e0');
+    this.px(x+w-12, y+18, 12, 4, '#e0e0e0');
+    this.px(x+2,  y+28, 10,   4, '#e0e0e0');
   }
 
   // ── Collectibles ───────────────────────────────────────────────────────────

@@ -25,7 +25,7 @@ class Terrain {
   }
 
   update(gameSpeed) {
-    this.offset         = (this.offset + gameSpeed) % TILE_WIDTH;
+    this.offset         = (this.offset + gameSpeed) % CANVAS_WIDTH;
     this._cloudOffset   = (this._cloudOffset + 0.4) % (CANVAS_WIDTH + 200);
     this._bgMountainOffset = (this._bgMountainOffset + gameSpeed * 0.2) % CANVAS_WIDTH;
 
@@ -88,6 +88,20 @@ class Terrain {
         ? ['#546e7a', '#455a64', '#37474f']
         : ['#1a237e', '#283593', '#303f9f'];
 
+    // Draw Sun / Moon (Pixel Art)
+    ctx.fillStyle = this.terrainPhase === 0 ? '#f1c40f' : this.terrainPhase === 1 ? '#ecf0f1' : '#c0392b';
+    const cRadius = 24;
+    const cx = 700 - this._bgMountainOffset * 0.1 % CANVAS_WIDTH;
+    const cy = 80;
+    // pixelated circle
+    for(let i = -cRadius; i <= cRadius; i += 4) {
+      for(let j = -cRadius; j <= cRadius; j += 4) {
+        if(i*i + j*j <= cRadius*cRadius) {
+           ctx.fillRect(cx + i, cy + j, 4, 4);
+        }
+      }
+    }
+
     // 3 parallax layers
     for (let layer = 0; layer < 3; layer++) {
       ctx.fillStyle = colors[layer];
@@ -97,50 +111,83 @@ class Terrain {
       const off   = (offsetX * speed * 0.5) % step;
 
       for (let tx = -step + off % step; tx < CANVAS_WIDTH + step; tx += step) {
-        ctx.beginPath();
-        ctx.moveTo(tx,        GROUND_Y);
-        ctx.lineTo(tx + step/2, GROUND_Y - ht);
-        ctx.lineTo(tx + step,   GROUND_Y);
-        ctx.closePath();
-        ctx.fill();
+        // Draw pixelated / stepped mountain
+        for (let y = 0; y < ht; y += 4) {
+          const w = Math.max(4, Math.floor((y / ht) * step / 4) * 4);
+          const cx = tx + step/2;
+          ctx.fillRect(Math.floor(cx - w/2), GROUND_Y - ht + y, w, 4);
+        }
       }
+    }
+  }
+
+  _generateGroundTextures() {
+    this.groundTextures = {};
+    for (let p = 0; p < 3; p++) {
+      const c = document.createElement('canvas');
+      const cw = CANVAS_WIDTH;
+      const ch = CANVAS_HEIGHT - GROUND_Y;
+      c.width = cw;
+      c.height = ch;
+      const ctx = c.getContext('2d');
+
+      const dirtCol = p === 0 ? '#8B6914' : p === 1 ? '#424242' : '#3a0000';
+      const bgCol   = p === 0 ? '#63490b' : p === 1 ? '#212121' : '#1a0000';
+      const topCol  = p === 0 ? '#5d9c3a' : p === 1 ? '#757575' : '#2c2c2c';
+      const edgeCol = p === 0 ? '#4a7f2e' : p === 1 ? '#616161' : '#1a1a1a';
+      const fossCol = p === 0 ? '#d4c990' : p === 1 ? '#9e9e9e' : '#5a0000';
+      const gemCol  = p === 0 ? '#3498db' : p === 1 ? '#9b59b6' : '#ff5500';
+
+      // Base dirt
+      ctx.fillStyle = dirtCol;
+      ctx.fillRect(0, 0, cw, ch);
+
+      // Noise generator (clumps of bg color)
+      ctx.fillStyle = bgCol;
+      for (let i = 0; i < 400; i++) {
+        const nx = Math.floor(Math.random() * (cw / 4)) * 4;
+        const ny = Math.floor(Math.random() * (ch / 4)) * 4;
+        if (ny > 8) ctx.fillRect(nx, ny, 4 + Math.random()*8, 4);
+      }
+
+      // Fossils & Gems
+      for (let i = 0; i < 15; i++) {
+        const fx = Math.floor(Math.random() * (cw / 20)) * 20;
+        const fy = 24 + Math.floor(Math.random() * (ch - 30));
+        ctx.fillStyle = Math.random() > 0.8 ? gemCol : fossCol;
+        // Simple pixel bone/gem shape
+        ctx.fillRect(fx, fy, 12, 4);
+        ctx.fillRect(fx-4, fy-4, 4, 4);
+        ctx.fillRect(fx-4, fy+4, 4, 4);
+        ctx.fillRect(fx+12, fy-4, 4, 4);
+        ctx.fillRect(fx+12, fy+4, 4, 4);
+      }
+
+      // Top strip with jagged 'dripping' edges
+      for (let x = 0; x < cw; x += 4) {
+        // Random root drip
+        const drip = Math.random() > 0.8 ? Math.floor(Math.random() * 4)*4 : 0;
+        const h = GROUND_HEIGHT + (p === 0 ? drip : (Math.random()>0.5?4:0)); // more drip for grass
+        
+        ctx.fillStyle = topCol;
+        ctx.fillRect(x, 0, 4, h);
+        
+        ctx.fillStyle = edgeCol;
+        ctx.fillRect(x, h - 4, 4, 4);
+      }
+      this.groundTextures[p] = c;
     }
   }
 
   _drawGround() {
     const ctx = this.ctx;
-    // ground block
-    const groundColor  = this.terrainPhase === 0 ? '#8B6914'
-                       : this.terrainPhase === 1 ? '#616161'
-                       : '#37474f';
-    const topColor     = this.terrainPhase === 0 ? '#5d9c3a'
-                       : this.terrainPhase === 1 ? '#9e9e9e'
-                       : '#607d8b';
-    const detailColor  = this.terrainPhase === 0 ? '#4a7f2e'
-                       : this.terrainPhase === 1 ? '#757575'
-                       : '#455a64';
+    if (!this.groundTextures) this._generateGroundTextures();
 
-    ctx.fillStyle = groundColor;
-    ctx.fillRect(0, GROUND_Y, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_Y);
-
-    // top strip
-    ctx.fillStyle = topColor;
-    ctx.fillRect(0, GROUND_Y, CANVAS_WIDTH, GROUND_HEIGHT);
-
-    // tiling detail lines
-    ctx.fillStyle = detailColor;
-    const tileW = TILE_WIDTH;
-    for (let tx = -this.offset; tx < CANVAS_WIDTH; tx += tileW) {
-      ctx.fillRect(Math.round(tx), GROUND_Y + 4, 2, GROUND_HEIGHT - 8);
-    }
-
-    // small pebble dots
-    const seed = Math.floor(this.offset);
-    for (let i = 0; i < 8; i++) {
-      const px = (i * 113 + seed * 7) % CANVAS_WIDTH;
-      const py = GROUND_Y + GROUND_HEIGHT + 4 + (i * 31) % 10;
-      ctx.fillStyle = detailColor;
-      ctx.fillRect(px, py, 3, 2);
-    }
+    const tex = this.groundTextures[this.terrainPhase];
+    const off = Math.floor(this.offset) % CANVAS_WIDTH;
+    
+    // Draw two copies of the texture side by side to scroll seamlessly
+    ctx.drawImage(tex, -off, GROUND_Y);
+    ctx.drawImage(tex, CANVAS_WIDTH - off, GROUND_Y);
   }
 }

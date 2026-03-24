@@ -82,7 +82,7 @@ class Game {
       // Draw preview
       const previewCtx = card.querySelector('.skin-preview').getContext('2d');
       const previewRenderer = new Renderer(previewCtx);
-      previewRenderer._drawPlayerRunning(12, 10, PLAYER_W, PLAYER_H, skin.colors, 4, {});
+      previewCtx.drawImage(previewRenderer.sprites[i].run1, 12, 14);
     });
   }
 

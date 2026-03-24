@@ -13,6 +13,7 @@ class Player {
     this.skinIndex = 0;
     this._doubleJumpUsed = false;
     this._slowTimer = 0;  // frames of slowdown from tar
+    this._invulnerableTimer = 0; // frames of invulnerability after shield break
 
     // Power-ups
     this.powerups = {
@@ -32,6 +33,7 @@ class Player {
     this.frame    = 0;
     this._doubleJumpUsed = false;
     this._slowTimer = 0;
+    this._invulnerableTimer = 0;
     this.powerups = { wings: false, star: false, shield: false };
     this._wingsDuration = 0;
     this._starDuration  = 0;
@@ -62,9 +64,10 @@ class Player {
   }
 
   hitByObstacle() {
-    if (this.powerups.star) return false; // invincible
+    if (this.powerups.star || this._invulnerableTimer > 0) return false; // invincible
     if (this.powerups.shield) {
       this.powerups.shield = false;
+      this._invulnerableTimer = 60; // 1 second invulnerability
       return false; // absorbed
     }
     return true; // real hit
@@ -87,6 +90,7 @@ class Player {
       if (this._starDuration <= 0) this.powerups.star = false;
     }
     if (this._slowTimer > 0) this._slowTimer--;
+    if (this._invulnerableTimer > 0) this._invulnerableTimer--;
 
     // Ducking
     if (input.isDucking() && this.onGround) {
