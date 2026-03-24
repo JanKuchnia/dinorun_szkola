@@ -24,13 +24,16 @@ class Terrain {
     return clouds;
   }
 
-  update(gameSpeed) {
-    this.offset         = (this.offset + gameSpeed) % CANVAS_WIDTH;
-    this._cloudOffset   = (this._cloudOffset + 0.4) % (CANVAS_WIDTH + 200);
-    this._bgMountainOffset = (this._bgMountainOffset + gameSpeed * 0.2) % CANVAS_WIDTH;
+  update(gameSpeed, dt = 16.666) {
+    const timeScale = dt / 16.666;
+    const frameSpeed = gameSpeed * timeScale;
+
+    this.offset         = (this.offset + frameSpeed) % CANVAS_WIDTH;
+    this._cloudOffset   = (this._cloudOffset + 0.4 * timeScale) % (CANVAS_WIDTH + 200);
+    this._bgMountainOffset = (this._bgMountainOffset + frameSpeed * 0.2) % CANVAS_WIDTH;
 
     for (const c of this._clouds) {
-      c.x -= c.speed * (gameSpeed / SPEED_INITIAL);
+      c.x -= c.speed * (gameSpeed / SPEED_INITIAL) * timeScale;
       if (c.x + c.w < 0) {
         c.x = CANVAS_WIDTH + 10;
         c.y = 30 + Math.random() * 90;

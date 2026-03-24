@@ -282,6 +282,69 @@ html, body {
   border-top: 1px solid var(--c-border);
 }
 
+/* ── Leaderboard ──────────────────────────────────────────── */
+#leaderboardOverlay h2 {
+  font-family: var(--font);
+  font-size: 32px;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+.leaderboard-list {
+  background: rgba(0,0,0,0.5);
+  border: 2px solid var(--c-border);
+  border-radius: 8px;
+  padding: 16px;
+  width: 320px;
+  max-height: 250px;
+  overflow-y: auto;
+  font-family: var(--font);
+  color: white;
+}
+.leaderboard-entry {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 4px;
+}
+.leaderboard-entry:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.name-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--c-panel);
+  border: 1px solid var(--c-gold);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 10px;
+}
+.name-input-container p {
+  font-family: var(--font);
+  color: var(--c-gold);
+  font-size: 14px;
+}
+#playerNameInput {
+  font-family: var(--font);
+  padding: 12px;
+  background: #1a1a2e;
+  border: 2px solid var(--c-accent);
+  color: white;
+  border-radius: 6px;
+  text-align: center;
+  text-transform: uppercase;
+  width: 140px;
+}
+#playerNameInput:focus {
+  outline: none;
+  border-color: var(--c-gold);
+}
+
 /* ── Scrollbar hide (canvas container) ───────────────────── */
 ::-webkit-scrollbar { display: none; }
 

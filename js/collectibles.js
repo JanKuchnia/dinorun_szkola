@@ -7,24 +7,26 @@ class CollectibleManager {
   }
 
   reset() {
-    this.collectibles = [];
+    for (const col of this.collectibles) col.active = false;
     this._frame = 0;
   }
 
-  update(gameSpeed, score) {
-    this._frame++;
+  update(gameSpeed, score, dt = 16.666) {
+    const timeScale = dt / 16.666;
+    const frameSpeed = gameSpeed * timeScale;
+    this._frame += timeScale;
 
     // Move existing
     for (const col of this.collectibles) {
-      col.x    -= gameSpeed;
-      col.frame++;
+      if (!col.active) continue;
+      col.x    -= frameSpeed;
+      col.frame += timeScale;
+      // Remove off-screen
+      if (col.x + col.w <= -10) col.active = false;
     }
 
-    // Remove off-screen
-    this.collectibles = this.collectibles.filter(c => c.x + c.w > -10);
-
     // Random spawn — higher score = slightly more collectibles
-    const chance = COLLECTIBLE_CHANCE * (1 + score / 5000);
+    const chance = COLLECTIBLE_CHANCE * (1 + score / 5000) * timeScale;
     if (Math.random() < chance) {
       this._spawn(score);
     }
@@ -43,32 +45,45 @@ class CollectibleManager {
 
     const type = COLLECTIBLE_TYPES[idx];
 
-    // Collectibles float at different heights
     const isAerial = ['wings', 'star', 'shield'].includes(type.id);
     const y = isAerial
       ? GROUND_Y - 90 - Math.random() * 40
       : GROUND_Y - type.h - 10;
 
-    this.collectibles.push({
-      type,
-      x:     CANVAS_WIDTH + 10,
-      y,
-      w:     type.w,
-      h:     type.h,
-      frame: 0,
-      collected: false,
-    });
+    // Object Pool: find inactive, else create new
+    const col = this.collectibles.find(c => !c.active);
+    if (col) {
+      col.active = true;
+      col.type = type;
+      col.x = CANVAS_WIDTH + 10;
+      col.y = y;
+      col.w = type.w;
+      col.h = type.h;
+      col.frame = 0;
+      col.collected = false;
+    } else {
+      this.collectibles.push({
+        active: true,
+        type,
+        x:     CANVAS_WIDTH + 10,
+        y,
+        w:     type.w,
+        h:     type.h,
+        frame: 0,
+        collected: false,
+      });
+    }
   }
 
   // Returns type that was collected (if any), null otherwise
   checkCollision(playerHitbox) {
     for (let i = this.collectibles.length - 1; i >= 0; i--) {
       const col = this.collectibles[i];
-      if (col.collected) continue;
+      if (!col.active || col.collected) continue;
       const hb = { x: col.x, y: col.y, w: col.w, h: col.h };
       if (rectsOverlap(playerHitbox, hb)) {
         col.collected = true;
-        this.collectibles.splice(i, 1);
+        col.active = false; // Despawn
         return col.type;
       }
     }

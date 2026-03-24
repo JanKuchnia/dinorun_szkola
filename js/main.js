@@ -50,9 +50,37 @@ class Game {
       e.target.textContent = on ? '🔊' : '🔇';
     });
 
+    // Leaderboard
+    document.getElementById('btnLeaderboard').addEventListener('click', () => this._showLeaderboard());
+    document.getElementById('btnGameOverLeaderboard').addEventListener('click', () => this._showLeaderboard(true));
+    document.getElementById('btnLbBack').addEventListener('click', () => {
+      document.getElementById('leaderboardOverlay').style.display = 'none';
+      if (this.state === GameState.GAME_OVER) {
+        document.getElementById('gameOverOverlay').style.display = 'flex';
+      } else {
+        document.getElementById('menuOverlay').style.display = 'flex';
+      }
+    });
+
+    const btnSubmit = document.getElementById('btnSubmitScore');
+    const nameInput = document.getElementById('playerNameInput');
+    btnSubmit.addEventListener('click', async () => {
+      const name = nameInput.value.trim() || 'ANON';
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'ZAPISYW...';
+      await Leaderboard.addScore(name, this.score);
+      await this._renderLeaderboard();
+      document.getElementById('nameInputContainer').style.display = 'none';
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = 'ZAPISZ';
+    });
+
     // Space bar on menu/game-over starts game
     window.addEventListener('keydown', e => {
       if (e.code === 'Space' || e.code === 'Enter') {
+        const lbVisible = document.getElementById('leaderboardOverlay').style.display === 'flex';
+        if (lbVisible) return; // ignore if leaderboard is open
+
         if      (this.state === GameState.MENU)      this._goToSkinSelect();
         else if (this.state === GameState.GAME_OVER) this._startGame();
       }
@@ -60,7 +88,8 @@ class Game {
 
     // Tap on canvas during game-over
     this.canvas.addEventListener('click', () => {
-      if (this.state === GameState.GAME_OVER) this._startGame();
+      const lbVisible = document.getElementById('leaderboardOverlay').style.display === 'flex';
+      if (this.state === GameState.GAME_OVER && !lbVisible) this._startGame();
     });
 
     // Skin selection cards
@@ -81,8 +110,8 @@ class Game {
 
       // Draw preview
       const previewCtx = card.querySelector('.skin-preview').getContext('2d');
-      const previewRenderer = new Renderer(previewCtx);
-      previewCtx.drawImage(previewRenderer.sprites[i].run1, 12, 14);
+      // Reuse the main game's cached sprites instead of regenerating
+      previewCtx.drawImage(this.renderer.sprites[i].run1, 12, 14);
     });
   }
 
@@ -99,6 +128,42 @@ class Game {
     document.getElementById('menuOverlay').style.display     = 'none';
     document.getElementById('skinOverlay').style.display     = 'flex';
     document.getElementById('gameOverOverlay').style.display = 'none';
+  }
+
+  async _showLeaderboard(fromGameOver = false) {
+    document.getElementById('menuOverlay').style.display = 'none';
+    document.getElementById('gameOverOverlay').style.display = 'none';
+    document.getElementById('leaderboardOverlay').style.display = 'flex';
+    
+    // Hide name input by default
+    document.getElementById('nameInputContainer').style.display = 'none';
+    const list = document.getElementById('leaderboardList');
+    list.innerHTML = 'Wczytywanie...';
+
+    // If opening from Game Over with a valid score, show the input
+    if (fromGameOver && this.score > 0) {
+       document.getElementById('nameInputContainer').style.display = 'flex';
+       document.getElementById('lbCurrentScore').textContent = Math.floor(this.score);
+       document.getElementById('playerNameInput').value = '';
+       document.getElementById('playerNameInput').focus();
+    }
+
+    await this._renderLeaderboard();
+  }
+
+  async _renderLeaderboard() {
+    const list = document.getElementById('leaderboardList');
+    const scores = await Leaderboard.getScores();
+    if (scores.length === 0) {
+      list.innerHTML = '<div style="text-align:center; padding: 20px;">BRAK WYNIKÓW</div>';
+      return;
+    }
+    list.innerHTML = scores.map((s, i) => `
+      <div class="leaderboard-entry">
+        <span>${i + 1}. ${s.name}</span>
+        <span style="color: var(--c-gold)">${s.score}</span>
+      </div>
+    `).join('');
   }
 
   _startGame() {
@@ -178,7 +243,7 @@ class Game {
     const effectiveSpeed = this.player.isSlowed ? this.gameSpeed * 0.4 : this.gameSpeed;
 
     // Update subsystems
-    this.terrain.update(effectiveSpeed);
+    this.terrain.update(effectiveSpeed, dt);
     this.player.update(this.input, dt);
 
     // Jump sound
@@ -196,9 +261,9 @@ class Game {
     }
 
     this.obstacles.setGap(this.score);
-    this.obstacles.update(effectiveSpeed, this.score);
-    this.collectibles.update(effectiveSpeed, this.score);
-    this.particles.update();
+    this.obstacles.update(effectiveSpeed, this.score, dt);
+    this.collectibles.update(effectiveSpeed, this.score, dt);
+    this.particles.update(dt);
     this.ui.updatePopups();
 
     // Collision detection
@@ -270,11 +335,11 @@ class Game {
     if (this.state === GameState.PLAYING || this.state === GameState.GAME_OVER) {
       // Obstacles
       for (const obs of this.obstacles.obstacles) {
-        this.renderer.drawObstacle(obs);
+        if (obs.active) this.renderer.drawObstacle(obs);
       }
       // Collectibles
       for (const col of this.collectibles.collectibles) {
-        this.renderer.drawCollectible(col);
+        if (col.active) this.renderer.drawCollectible(col);
       }
       // Particles
       this.renderer.drawParticles(this.particles.particles);

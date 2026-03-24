@@ -31,7 +31,10 @@
         <div class="ctrl">PRZESUŃ W DÓŁ by kucnąć</div>
       </div>
 
-      <button id="btnStart" class="btn btn-primary">▶ START</button>
+      <div style="display:flex; gap:16px;">
+        <button id="btnStart" class="btn btn-primary">▶ START</button>
+        <button id="btnLeaderboard" class="btn btn-secondary">🏆 WYNIKI</button>
+      </div>
 
       <p class="hint">NACIŚNIJ SPACJĘ, ABY ROZPOCZĄĆ</p>
     </div>
@@ -53,8 +56,27 @@
         <div id="finalScore">WYNIK: 0</div>
         <div id="hiScore">NAJLEPSZY: 0</div>
       </div>
-      <button id="btnRestart" class="btn btn-primary">▶ ZAGRAJ PONOWNIE</button>
+      <div style="display:flex; gap:16px; margin-top:10px;">
+        <button id="btnRestart" class="btn btn-primary">▶ ZAGRAJ PONOWNIE</button>
+        <button id="btnGameOverLeaderboard" class="btn btn-secondary">🏆 ZAPISZ WYNIK</button>
+      </div>
       <p class="hint">NACIŚNIJ SPACJĘ LUB DOTKNIJ, ABY ZRESTARTOWAĆ</p>
+    </div>
+
+    <!-- ── Leaderboard ──────────────────────────────────────── -->
+    <div id="leaderboardOverlay" class="overlay" style="display:none">
+      <h2>TOP 10 GRACZY</h2>
+      <div class="leaderboard-list" id="leaderboardList">
+        Wczytywanie...
+      </div>
+      <div class="name-input-container" id="nameInputContainer" style="display:none">
+        <p>TWÓJ WYNIK: <span id="lbCurrentScore">0</span></p>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <input type="text" id="playerNameInput" placeholder="TWÓJ NICK" maxlength="10">
+          <button class="btn btn-primary" id="btnSubmitScore" style="padding: 12px 20px;">ZAPISZ</button>
+        </div>
+      </div>
+      <button id="btnLbBack" class="btn btn-ghost" style="margin-top:20px;">← WRÓĆ DO MENU</button>
     </div>
 
     <!-- ── Orientation Warning ─────────────────────────────── -->
@@ -75,6 +97,7 @@
   <script src="js/particles.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/leaderboard.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
