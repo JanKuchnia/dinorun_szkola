@@ -1,0 +1,284 @@
+/* ──────────────────────────────────────────────────────────
+   Dino Run — High School Edition  ·  Global Stylesheet
+   ────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-bg:      #0d0d1a;
+  --c-accent:  #e94560;
+  --c-gold:    #f1c40f;
+  --c-purple:  #9b59b6;
+  --c-blue:    #3498db;
+  --c-green:   #2ecc71;
+  --c-panel:   rgba(255,255,255,0.06);
+  --c-border:  rgba(255,255,255,0.12);
+  --radius:    14px;
+  --font:      'Press Start 2P', monospace;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--c-bg);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Game wrapper ─────────────────────────────────────────── */
+#gameWrapper {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(233,69,96,0.25),
+              0 0 120px rgba(155,89,182,0.12),
+              0 24px 80px rgba(0,0,0,0.7);
+}
+
+#gameCanvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ── Mute button ──────────────────────────────────────────── */
+#btnMute {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--c-border);
+  color: #fff; font-size: 18px;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+  z-index: 20;
+}
+#btnMute:hover { background: rgba(255,255,255,0.15); }
+
+/* ── Shared overlay base ──────────────────────────────────── */
+.overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: linear-gradient(160deg,
+    rgba(13,13,26,0.94) 0%,
+    rgba(26,10,36,0.96) 100%);
+  backdrop-filter: blur(2px);
+  z-index: 10;
+  gap: 18px;
+  padding: 24px;
+}
+
+/* ── Typography ───────────────────────────────────────────── */
+.game-title {
+  font-family: var(--font);
+  font-size: 28px;
+  line-height: 1.4;
+  text-align: center;
+  background: linear-gradient(135deg, #e94560 0%, #f1c40f 50%, #9b59b6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(233,69,96,0.5));
+  animation: titlePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%,100% { filter: drop-shadow(0 0 12px rgba(233,69,96,0.5)); }
+  50%      { filter: drop-shadow(0 0 22px rgba(241,196,15,0.7)); }
+}
+
+.subtitle {
+  font-family: var(--font);
+  font-size: 8px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.hint {
+  font-family: var(--font);
+  font-size: 7px;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  animation: blink 1.4s step-end infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font);
+  font-size: 11px;
+  padding: 14px 32px;
+  border: none; border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.btn:hover  { transform: translateY(-3px); filter: brightness(1.15); }
+.btn:active { transform: translateY(0px);  filter: brightness(0.9); }
+
+.btn-primary {
+  background: linear-gradient(135deg, #e94560, #c0392b);
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(233,69,96,0.4);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  border: 1px solid var(--c-border);
+  box-shadow: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+  font-size: 9px;
+  padding: 10px 20px;
+}
+
+/* ── Controls legend ──────────────────────────────────────── */
+.controls-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+  background: var(--c-panel);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  padding: 14px 20px;
+}
+
+.ctrl {
+  font-family: var(--font);
+  font-size: 7px;
+  color: rgba(255,255,255,0.6);
+  display: flex; align-items: center; gap: 8px;
+}
+
+.ctrl kbd {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 8px;
+  color: #fff;
+  font-family: var(--font);
+}
+
+/* ── Skin selection grid ──────────────────────────────────── */
+#skinOverlay h2 {
+  font-family: var(--font);
+  font-size: 13px;
+  color: #fff;
+  text-align: center;
+}
+
+#skinGrid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.skin-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px;
+  padding: 14px 12px;
+  background: var(--c-panel);
+  border: 2px solid var(--c-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+  min-width: 110px;
+}
+
+.skin-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.skin-card.selected {
+  border-color: var(--c-gold);
+  box-shadow: 0 0 18px rgba(241,196,15,0.35);
+  background: rgba(241,196,15,0.08);
+}
+
+.skin-preview {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.skin-name {
+  font-family: var(--font);
+  font-size: 7px;
+  color: rgba(255,255,255,0.8);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.skin-card.selected .skin-name {
+  color: var(--c-gold);
+}
+
+/* ── Skin select row of buttons ───────────────────────────── */
+.skin-btn-row {
+  display: flex; gap: 12px;
+}
+
+/* ── Game Over overlay ────────────────────────────────────── */
+#gameOverOverlay h2 {
+  font-family: var(--font);
+  font-size: 24px;
+  color: var(--c-accent);
+  text-shadow: 0 0 20px rgba(233,69,96,0.7);
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-5px); }
+  80%      { transform: translateX(5px); }
+}
+
+.score-display {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: var(--c-panel);
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  padding: 16px 36px;
+}
+
+#finalScore {
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--c-gold);
+}
+
+#hiScore {
+  font-family: var(--font);
+  font-size: 9px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* ── Divider ──────────────────────────────────────────────── */
+.divider {
+  width: 80%;
+  border: none;
+  border-top: 1px solid var(--c-border);
+}
+
+/* ── Scrollbar hide (canvas container) ───────────────────── */
+::-webkit-scrollbar { display: none; }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dino Run — High School Edition</title>
+  <meta name="description" content="An endless runner game featuring high school students dodging prehistoric obstacles. Jump, duck, and collect power-ups!" />
+  <link rel="stylesheet" href="css/game.css" />
+</head>
+<body>
+
+  <div id="gameWrapper">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Mute button (always visible during gameplay) -->
+    <button id="btnMute" title="Toggle sound">🔊</button>
+
+    <!-- ── Main Menu ─────────────────────────────────────── -->
+    <div id="menuOverlay" class="overlay">
+      <h1 class="game-title">DINO RUN<br/>HIGH SCHOOL</h1>
+      <p class="subtitle">ENDLESS PREHISTORIC RUNNER</p>
+
+      <hr class="divider" />
+
+      <div class="controls-legend">
+        <div class="ctrl"><kbd>SPACE</kbd> Jump</div>
+        <div class="ctrl"><kbd>↓</kbd> Duck</div>
+        <div class="ctrl"><kbd>↑</kbd> Jump (alt)</div>
+        <div class="ctrl">Double jump needs Wings ✦</div>
+        <div class="ctrl">TAP to jump on mobile</div>
+        <div class="ctrl">SWIPE DOWN to duck</div>
+      </div>
+
+      <button id="btnStart" class="btn btn-primary">▶ START GAME</button>
+
+      <p class="hint">PRESS SPACE TO START</p>
+    </div>
+
+    <!-- ── Skin Selection ──────────────────────────────────── -->
+    <div id="skinOverlay" class="overlay" style="display:none">
+      <h2>CHOOSE YOUR CHARACTER</h2>
+      <div id="skinGrid"></div>
+      <div class="skin-btn-row">
+        <button id="btnSkinBack"  class="btn btn-ghost">← BACK</button>
+        <button id="btnSkinStart" class="btn btn-primary">▶ RUN!</button>
+      </div>
+    </div>
+
+    <!-- ── Game Over ───────────────────────────────────────── -->
+    <div id="gameOverOverlay" class="overlay" style="display:none">
+      <h2>GAME OVER</h2>
+      <div class="score-display">
+        <div id="finalScore">SCORE: 0</div>
+        <div id="hiScore">BEST: 0</div>
+      </div>
+      <button id="btnRestart" class="btn btn-primary">▶ PLAY AGAIN</button>
+      <p class="hint">PRESS SPACE OR TAP TO RESTART</p>
+    </div>
+  </div>
+
+  <!-- Scripts — order matters: constants first, main last -->
+  <script src="js/constants.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/terrain.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/obstacles.js"></script>
+  <script src="js/collectibles.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
