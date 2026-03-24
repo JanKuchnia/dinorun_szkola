@@ -98,9 +98,9 @@ class Terrain {
 
       for (let tx = -step + off % step; tx < CANVAS_WIDTH + step; tx += step) {
         ctx.beginPath();
-        ctx.moveTo(tx,        GROUND_Y - 20);
-        ctx.lineTo(tx + step/2, GROUND_Y - 20 - ht);
-        ctx.lineTo(tx + step,   GROUND_Y - 20);
+        ctx.moveTo(tx,        GROUND_Y);
+        ctx.lineTo(tx + step/2, GROUND_Y - ht);
+        ctx.lineTo(tx + step,   GROUND_Y);
         ctx.closePath();
         ctx.fill();
       }

@@ -2,7 +2,7 @@
    Dino Run — High School Edition  ·  Global Stylesheet
    ────────────────────────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -16,7 +16,7 @@
   --c-panel:   rgba(255,255,255,0.06);
   --c-border:  rgba(255,255,255,0.12);
   --radius:    14px;
-  --font:      'Press Start 2P', monospace;
+  --font:      'Silkscreen', monospace;
 }
 
 html, body {

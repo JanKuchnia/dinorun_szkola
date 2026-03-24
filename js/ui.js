@@ -34,19 +34,19 @@ class UI {
     const disp = Math.floor(score);
 
     // Score panel background
-    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
     ctx.beginPath();
-    ctx.roundRect(12, 10, 220, 44, 10);
+    ctx.roundRect(12, 10, 260, 50, 10);
     ctx.fill();
 
     // Score text
     ctx.fillStyle = '#e8d5a3';
-    ctx.font      = 'bold 15px "Press Start 2P", monospace';
-    ctx.fillText(`WYNIK  ${String(disp).padStart(6,'0')}`, 22, 28);
+    ctx.font      = '16px "Silkscreen", monospace';
+    ctx.fillText(`WYNIK ${String(disp).padStart(6,'0')}`, 22, 32);
 
     ctx.fillStyle = '#aaa';
-    ctx.font      = '10px "Press Start 2P", monospace';
-    ctx.fillText(`MAX  ${String(this._hiScore).padStart(6,'0')}`, 22, 48);
+    ctx.font      = '12px "Silkscreen", monospace';
+    ctx.fillText(`MAX   ${String(this._hiScore).padStart(6,'0')}`, 22, 52);
 
     // Power-up icons
     let px = CANVAS_WIDTH - 60;
@@ -66,7 +66,7 @@ class UI {
     for (const p of this._popups) {
       ctx.globalAlpha = p.life;
       ctx.fillStyle   = p.color;
-      ctx.font        = 'bold 14px "Press Start 2P", monospace';
+      ctx.font        = 'bold 14px "Silkscreen", monospace';
       ctx.fillText(p.text, p.x, p.y);
     }
     ctx.globalAlpha = 1;
@@ -95,19 +95,30 @@ class UI {
   drawSpeedIndicator(gameSpeed) {
     const ctx   = this.ctx;
     const level = Math.floor((gameSpeed - SPEED_INITIAL) / (SPEED_MAX - SPEED_INITIAL) * 10);
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    
+    // Label wrapper
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
     ctx.beginPath();
-    ctx.roundRect(12, 60, 130, 18, 6);
+    ctx.roundRect(12, 70, 260, 24, 6);
     ctx.fill();
 
-    ctx.fillStyle = '#e74c3c';
-    ctx.beginPath();
-    ctx.roundRect(14, 62, Math.round(Math.min(level,10) / 10 * 126), 14, 5);
-    ctx.fill();
-
+    // Text
     ctx.fillStyle = '#fff';
-    ctx.font      = '7px "Press Start 2P", monospace';
-    ctx.fillText('PRĘDKOŚĆ', 16, 73);
+    ctx.font      = '10px "Silkscreen", monospace';
+    ctx.fillText(`PRĘDKOŚĆ: ${Math.min(level, 10)}`, 22, 87);
+
+    // Mini bar next to it
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.beginPath();
+    ctx.roundRect(170, 76, 90, 12, 4);
+    ctx.fill();
+
+    if (level > 0) {
+      ctx.fillStyle = '#e74c3c';
+      ctx.beginPath();
+      ctx.roundRect(170, 76, Math.round(Math.min(level, 10) / 10 * 90), 12, 4);
+      ctx.fill();
+    }
   }
 
   drawSlowEffect(ctx) {
@@ -121,10 +132,10 @@ class UI {
     ctx.fillStyle = 'rgba(255,220,60,0.22)';
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctx.fillStyle = '#fff';
-    ctx.font      = 'bold 22px "Press Start 2P", monospace';
+    ctx.font      = 'bold 22px "Silkscreen", monospace';
     ctx.textAlign = 'center';
     ctx.fillText(`${score} PUNKTÓW!`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
-    ctx.font      = '11px "Press Start 2P", monospace';
+    ctx.font      = '11px "Silkscreen", monospace';
     ctx.fillStyle = '#ffe97d';
     if (score === 500)  ctx.fillText('PTERODAKTYLE ATAKUJĄ!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 30);
     if (score === 1000) ctx.fillText('TEREN: EPOKA KAMIENIA!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 30);
