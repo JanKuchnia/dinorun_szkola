@@ -29,17 +29,19 @@ html, body {
 /* ── Game wrapper ─────────────────────────────────────────── */
 #gameWrapper {
   position: relative;
-  border-radius: var(--radius);
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
-  box-shadow: 0 0 60px rgba(233,69,96,0.25),
-              0 0 120px rgba(155,89,182,0.12),
-              0 24px 80px rgba(0,0,0,0.7);
+  background: var(--c-bg);
 }
 
 #gameCanvas {
   display: block;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* ── Mute button ──────────────────────────────────────────── */
@@ -282,3 +284,23 @@ html, body {
 
 /* ── Scrollbar hide (canvas container) ───────────────────── */
 ::-webkit-scrollbar { display: none; }
+
+/* ── Orientation Logic ─────────────────────────────────────── */
+#orientationWarning {
+  display: none;
+  z-index: 1000;
+  background: var(--c-bg);
+}
+
+@media (orientation: portrait) {
+  #orientationWarning {
+    display: flex !important;
+  }
+  #gameCanvas,
+  #menuOverlay,
+  #skinOverlay,
+  #gameOverOverlay,
+  #btnMute {
+    display: none !important;
+  }
+}
