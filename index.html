@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dino Run — High School Edition</title>
-  <meta name="description" content="An endless runner game featuring high school students dodging prehistoric obstacles. Jump, duck, and collect power-ups!" />
+  <title>Dino Run — Liceum</title>
+  <meta name="description" content="Nieskończona gra zręcznościowa z licealistami unikającymi prehistorycznych przeszkód. Skacz, kucaj i zbieraj power-upy!" />
   <link rel="stylesheet" href="css/game.css" />
 </head>
 <body>
@@ -17,50 +17,50 @@
 
     <!-- ── Main Menu ─────────────────────────────────────── -->
     <div id="menuOverlay" class="overlay">
-      <h1 class="game-title">DINO RUN<br/>HIGH SCHOOL</h1>
-      <p class="subtitle">ENDLESS PREHISTORIC RUNNER</p>
+      <h1 class="game-title">DINO RUN<br/>LICEUM</h1>
+      <p class="subtitle">NIESKOŃCZONY PREHISTORYCZNY BIEG</p>
 
       <hr class="divider" />
 
       <div class="controls-legend">
-        <div class="ctrl"><kbd>SPACE</kbd> Jump</div>
-        <div class="ctrl"><kbd>↓</kbd> Duck</div>
-        <div class="ctrl"><kbd>↑</kbd> Jump (alt)</div>
-        <div class="ctrl">Double jump needs Wings ✦</div>
-        <div class="ctrl">TAP to jump on mobile</div>
-        <div class="ctrl">SWIPE DOWN to duck</div>
+        <div class="ctrl"><kbd>SPACJA</kbd> Skok</div>
+        <div class="ctrl"><kbd>↓</kbd> Kucnij</div>
+        <div class="ctrl"><kbd>↑</kbd> Skok (alt)</div>
+        <div class="ctrl">Podwójny skok wymaga Skrzydeł ✦</div>
+        <div class="ctrl">DOTKNIJ by skoczyć (telefon)</div>
+        <div class="ctrl">PRZESUŃ W DÓŁ by kucnąć</div>
       </div>
 
-      <button id="btnStart" class="btn btn-primary">▶ START GAME</button>
+      <button id="btnStart" class="btn btn-primary">▶ START</button>
 
-      <p class="hint">PRESS SPACE TO START</p>
+      <p class="hint">NACIŚNIJ SPACJĘ, ABY ROZPOCZĄĆ</p>
     </div>
 
     <!-- ── Skin Selection ──────────────────────────────────── -->
     <div id="skinOverlay" class="overlay" style="display:none">
-      <h2>CHOOSE YOUR CHARACTER</h2>
+      <h2>WYBIERZ POSTAĆ</h2>
       <div id="skinGrid"></div>
       <div class="skin-btn-row">
-        <button id="btnSkinBack"  class="btn btn-ghost">← BACK</button>
-        <button id="btnSkinStart" class="btn btn-primary">▶ RUN!</button>
+        <button id="btnSkinBack"  class="btn btn-ghost">← WSTECZ</button>
+        <button id="btnSkinStart" class="btn btn-primary">▶ BIEGNIJ!</button>
       </div>
     </div>
 
     <!-- ── Game Over ───────────────────────────────────────── -->
     <div id="gameOverOverlay" class="overlay" style="display:none">
-      <h2>GAME OVER</h2>
+      <h2>KONIEC GRY</h2>
       <div class="score-display">
-        <div id="finalScore">SCORE: 0</div>
-        <div id="hiScore">BEST: 0</div>
+        <div id="finalScore">WYNIK: 0</div>
+        <div id="hiScore">NAJLEPSZY: 0</div>
       </div>
-      <button id="btnRestart" class="btn btn-primary">▶ PLAY AGAIN</button>
-      <p class="hint">PRESS SPACE OR TAP TO RESTART</p>
+      <button id="btnRestart" class="btn btn-primary">▶ ZAGRAJ PONOWNIE</button>
+      <p class="hint">NACIŚNIJ SPACJĘ LUB DOTKNIJ, ABY ZRESTARTOWAĆ</p>
     </div>
 
     <!-- ── Orientation Warning ─────────────────────────────── -->
     <div id="orientationWarning" class="overlay">
-      <h2 style="font-family: var(--font); color: var(--c-accent); text-align: center; font-size: 16px; line-height: 1.5;">⚠️<br><br>PLEASE ROTATE<br>YOUR DEVICE</h2>
-      <p class="hint">THIS GAME REQUIRES LANDSCAPE MODE</p>
+      <h2 style="font-family: var(--font); color: var(--c-accent); text-align: center; font-size: 16px; line-height: 1.5;">⚠️<br><br>PROSZĘ OBRÓCIĆ<br>URZĄDZENIE</h2>
+      <p class="hint">TA GRA WYMAGA TRYBU POZIOMEGO</p>
     </div>
   </div>
 

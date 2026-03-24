@@ -124,8 +124,8 @@ class Game {
 
     const overlay  = document.getElementById('gameOverOverlay');
     overlay.style.display = 'flex';
-    document.getElementById('finalScore').textContent = `SCORE: ${Math.floor(this.score)}`;
-    document.getElementById('hiScore').textContent    = `BEST: ${parseInt(localStorage.getItem('dinoHS'))}`;
+    document.getElementById('finalScore').textContent = `WYNIK: ${Math.floor(this.score)}`;
+    document.getElementById('hiScore').textContent    = `NAJLEPSZY: ${parseInt(localStorage.getItem('dinoHS'))}`;
 
     this.renderer.triggerShake(14, 8);
     this.audio.death();
@@ -237,7 +237,12 @@ class Game {
         const color = collected.id === 'golden_egg' ? '#ffd700' : '#2ecc71';
         this.ui.addPopup(label, displayX, displayY, color);
       } else {
-        this.ui.addPopup(collected.id.toUpperCase() + '!', displayX, displayY, '#9b59b6');
+        const names = {
+          'wings': 'SKRZYDŁA!',
+          'star': 'GWIAZDA!',
+          'shield': 'TARCZA!'
+        };
+        this.ui.addPopup(names[collected.id] || collected.id.toUpperCase() + '!', displayX, displayY, '#9b59b6');
       }
 
       // Activate power-up

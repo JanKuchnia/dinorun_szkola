@@ -59,10 +59,10 @@ const COLORS = {
 
 // Skins
 const SKINS = [
-  { id: 'backpack', name: 'Backpack Kid',    colors: { body: '#3a7bd5', pants: '#5a5a8a', skin: '#f5c5a3', hair: '#3d2b1f', extra: '#8B4513' } },
-  { id: 'varsity',  name: 'Varsity Star',    colors: { body: '#c0392b', pants: '#5a5a8a', skin: '#f5c5a3', hair: '#2c1810', extra: '#f39c12' } },
-  { id: 'hoodie',   name: 'Hoodie Kid',      colors: { body: '#f39c12', pants: '#455a64', skin: '#f5c5a3', hair: '#5d4037', extra: '#78909c' } },
-  { id: 'dino',     name: '🦕 Classic Dino', colors: { body: '#4caf50', pants: '#388e3c', skin: '#81c784', hair: '#2e7d32', extra: '#a5d6a7' } },
+  { id: 'backpack', name: 'Z plecakiem',    colors: { body: '#3a7bd5', pants: '#5a5a8a', skin: '#f5c5a3', hair: '#3d2b1f', extra: '#8B4513' } },
+  { id: 'varsity',  name: 'Gwiazda sportu',    colors: { body: '#c0392b', pants: '#5a5a8a', skin: '#f5c5a3', hair: '#2c1810', extra: '#f39c12' } },
+  { id: 'hoodie',   name: 'W bluzie',      colors: { body: '#f39c12', pants: '#455a64', skin: '#f5c5a3', hair: '#5d4037', extra: '#78909c' } },
+  { id: 'dino',     name: '🦕 Klasyczny Dino', colors: { body: '#4caf50', pants: '#388e3c', skin: '#81c784', hair: '#2e7d32', extra: '#a5d6a7' } },
 ];
 
 // Obstacle types definition

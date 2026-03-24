@@ -42,11 +42,11 @@ class UI {
     // Score text
     ctx.fillStyle = '#e8d5a3';
     ctx.font      = 'bold 15px "Press Start 2P", monospace';
-    ctx.fillText(`SCORE  ${String(disp).padStart(6,'0')}`, 22, 28);
+    ctx.fillText(`WYNIK  ${String(disp).padStart(6,'0')}`, 22, 28);
 
     ctx.fillStyle = '#aaa';
     ctx.font      = '10px "Press Start 2P", monospace';
-    ctx.fillText(`HI  ${String(this._hiScore).padStart(6,'0')}`, 22, 48);
+    ctx.fillText(`MAX  ${String(this._hiScore).padStart(6,'0')}`, 22, 48);
 
     // Power-up icons
     let px = CANVAS_WIDTH - 60;
@@ -107,7 +107,7 @@ class UI {
 
     ctx.fillStyle = '#fff';
     ctx.font      = '7px "Press Start 2P", monospace';
-    ctx.fillText('SPEED', 16, 73);
+    ctx.fillText('PRĘDKOŚĆ', 16, 73);
   }
 
   drawSlowEffect(ctx) {
@@ -123,12 +123,12 @@ class UI {
     ctx.fillStyle = '#fff';
     ctx.font      = 'bold 22px "Press Start 2P", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(`${score} POINTS!`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+    ctx.fillText(`${score} PUNKTÓW!`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
     ctx.font      = '11px "Press Start 2P", monospace';
     ctx.fillStyle = '#ffe97d';
-    if (score === 500)  ctx.fillText('PTERODACTYLS APPEAR!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 30);
-    if (score === 1000) ctx.fillText('TERRAIN: STONE AGE!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 30);
-    if (score === 2000) ctx.fillText('TERRAIN: VOLCANIC!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 30);
+    if (score === 500)  ctx.fillText('PTERODAKTYLE ATAKUJĄ!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 30);
+    if (score === 1000) ctx.fillText('TEREN: EPOKA KAMIENIA!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 30);
+    if (score === 2000) ctx.fillText('TEREN: WULKANICZNY!', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 30);
     ctx.textAlign = 'left';
     ctx.restore();
   }

@@ -77,7 +77,7 @@ html, body {
 /* ── Typography ───────────────────────────────────────────── */
 .game-title {
   font-family: var(--font);
-  font-size: 28px;
+  font-size: 40px;
   line-height: 1.4;
   text-align: center;
   background: linear-gradient(135deg, #e94560 0%, #f1c40f 50%, #9b59b6 100%);
@@ -95,7 +95,7 @@ html, body {
 
 .subtitle {
   font-family: var(--font);
-  font-size: 8px;
+  font-size: 14px;
   color: rgba(255,255,255,0.5);
   letter-spacing: 2px;
   text-align: center;
@@ -103,7 +103,7 @@ html, body {
 
 .hint {
   font-family: var(--font);
-  font-size: 7px;
+  font-size: 12px;
   color: rgba(255,255,255,0.35);
   text-align: center;
   animation: blink 1.4s step-end infinite;
@@ -117,8 +117,8 @@ html, body {
 /* ── Buttons ──────────────────────────────────────────────── */
 .btn {
   font-family: var(--font);
-  font-size: 11px;
-  padding: 14px 32px;
+  font-size: 16px;
+  padding: 18px 40px;
   border: none; border-radius: 8px;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
@@ -146,24 +146,24 @@ html, body {
   background: transparent;
   color: rgba(255,255,255,0.4);
   border: 1px solid rgba(255,255,255,0.1);
-  font-size: 9px;
-  padding: 10px 20px;
+  font-size: 14px;
+  padding: 14px 28px;
 }
 
 /* ── Controls legend ──────────────────────────────────────── */
 .controls-legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px 24px;
+  gap: 12px 32px;
   background: var(--c-panel);
   border: 1px solid var(--c-border);
   border-radius: 10px;
-  padding: 14px 20px;
+  padding: 20px 30px;
 }
 
 .ctrl {
   font-family: var(--font);
-  font-size: 7px;
+  font-size: 12px;
   color: rgba(255,255,255,0.6);
   display: flex; align-items: center; gap: 8px;
 }
@@ -171,9 +171,9 @@ html, body {
 .ctrl kbd {
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 4px;
-  padding: 3px 6px;
-  font-size: 8px;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
   color: #fff;
   font-family: var(--font);
 }
@@ -181,7 +181,7 @@ html, body {
 /* ── Skin selection grid ──────────────────────────────────── */
 #skinOverlay h2 {
   font-family: var(--font);
-  font-size: 13px;
+  font-size: 24px;
   color: #fff;
   text-align: center;
 }
@@ -223,7 +223,7 @@ html, body {
 
 .skin-name {
   font-family: var(--font);
-  font-size: 7px;
+  font-size: 12px;
   color: rgba(255,255,255,0.8);
   text-align: center;
   line-height: 1.6;
@@ -241,7 +241,7 @@ html, body {
 /* ── Game Over overlay ────────────────────────────────────── */
 #gameOverOverlay h2 {
   font-family: var(--font);
-  font-size: 24px;
+  font-size: 40px;
   color: var(--c-accent);
   text-shadow: 0 0 20px rgba(233,69,96,0.7);
   animation: shake 0.4s ease;
@@ -265,13 +265,13 @@ html, body {
 
 #finalScore {
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 20px;
   color: var(--c-gold);
 }
 
 #hiScore {
   font-family: var(--font);
-  font-size: 9px;
+  font-size: 14px;
   color: rgba(255,255,255,0.5);
 }
 
