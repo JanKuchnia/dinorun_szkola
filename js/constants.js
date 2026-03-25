@@ -30,7 +30,8 @@ const OBSTACLE_MIN_GAP    = 700;   // px between obstacles at start
 const OBSTACLE_GAP_MIN    = 320;   // absolute minimum gap
 const OBSTACLE_GAP_REDUCE = 15;    // reduced every SPEED_SCORE_INTERVAL
 const AERIAL_SCORE_START  = 500;   // score at which pterodactyl appears
-const COMBO_SCORE_START   = 1000;  // score at which obstacle pairs appear
+const COMBO_SCORE_START      = 1000;
+const PTERODACTYL_SPEED_OFFSET = 2.5; // Extra speed towards player  // score at which obstacle pairs appear
 
 // Collectible settings
 const COLLECTIBLE_CHANCE  = 0.003; // per-frame chance to spawn (during game)

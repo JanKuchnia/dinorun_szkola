@@ -28,19 +28,27 @@ class ObstacleManager {
     // Move existing obstacles
     for (const obs of this.obstacles) {
       if (!obs.active) continue;
-      obs.x     -= frameSpeed;
+      
+      let speed = frameSpeed;
+      if (obs.type.id === 'pterodactyl') {
+        speed += PTERODACTYL_SPEED_OFFSET * timeScale;
+      }
+      
+      obs.x     -= speed;
       obs.frame += timeScale;
       // Pterodactyl hover sine movement
       if (obs.type.id === 'pterodactyl') {
         obs.y = obs._baseY + Math.sin(obs.frame * 0.05) * 10;
       }
-      if (obs.x + obs.w <= -20) obs.active = false;
+      if (obs.x + obs.w <= -100) obs.active = false;
     }
 
     // Spawn new
     if (this._traveled >= this._nextSpawn) {
       this._spawn(score);
-      this._nextSpawn = this._traveled + this._gap + Math.random() * this._gap * 0.5;
+      // More randomized spacing: from 80% to 150% of the current gap
+      const randomFactor = 0.8 + Math.random() * 0.7;
+      this._nextSpawn = this._traveled + (this._gap * randomFactor);
     }
   }
 

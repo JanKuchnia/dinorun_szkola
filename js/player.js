@@ -130,7 +130,14 @@ class Player {
 
     // Physics
     if (!this.onGround || this.state === 'JUMPING' || this.state === 'DOUBLE_JUMPING') {
-      this.vy += GRAVITY;
+      let gravity = GRAVITY;
+      
+      // Fast Fall: if ducking in air, fall much faster
+      if (input.isDucking()) {
+        gravity *= 4;
+      }
+
+      this.vy += gravity;
       this.y  += this.vy;
 
       const groundTop = GROUND_Y - this.h;
