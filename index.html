@@ -33,10 +33,47 @@
 
       <div style="display:flex; gap:16px;">
         <button id="btnStart" class="btn btn-primary">▶ START</button>
-        <button id="btnLeaderboard" class="btn btn-secondary">🏆 WYNIKI</button>
+        <button id="btnLeaderboard" class="btn btn-secondary" title="Wyniki">🏆</button>
+        <button id="btnInfo" class="btn btn-secondary" title="Instrukcja">❓</button>
       </div>
 
       <p class="hint">NACIŚNIJ SPACJĘ, ABY ROZPOCZĄĆ</p>
+    </div>
+
+    <!-- ── Info / Help Overlay ──────────────────────────────── -->
+    <div id="infoOverlay" class="overlay" style="display:none">
+      <h2 style="color:var(--c-gold); margin-bottom: 10px;">JAK GRAĆ?</h2>
+      <div class="info-content">
+        <section>
+          <h3>🕹️ STEROWANIE</h3>
+          <ul>
+            <li><strong>SKOK:</strong> Spacja / Strzałka w górę / Dotyk</li>
+            <li><strong>KUCANIE:</strong> Strzałka w dół / S / Przesunięcie w dół</li>
+            <li><strong>SZYBKIE SPADANIE:</strong> Kucnij będąc w powietrzu!</li>
+          </ul>
+        </section>
+        <section>
+          <h3>🎁 POWER-UPY (10s)</h3>
+          <ul>
+            <li>🛡️ <strong>TARCZA:</strong> Chroni przed jednym uderzeniem.</li>
+            <li>🦅 <strong>SKRZYDŁA:</strong> Pozwalają na podwójny skok.</li>
+            <li>⭐ <strong>GWIAZDKA:</strong> Nieśmiertelność i większa prędkość.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>⚠️ PRZESZKODY</h3>
+          <ul>
+            <li>🌵 <strong>PRZESZKODY:</strong> Klasyczne kolce i murki.</li>
+            <li>🦅 <strong>PTERODAKTYLE:</strong> Lecą na 3 wysokościach!</li>
+            <li>🛢️ <strong>SMOŁA:</strong> Spowalnia Cię na chwilę.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>📈 TRUDNOŚĆ</h3>
+          <p>Gra przyspiesza co <strong>50 punktów</strong>. Powodzenia!</p>
+        </section>
+      </div>
+      <button id="btnInfoBack" class="btn btn-ghost">← WSTECZ</button>
     </div>
 
     <!-- ── Skin Selection ──────────────────────────────────── -->

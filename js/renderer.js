@@ -323,6 +323,66 @@ B2211111111BB11111222B...B3222B22B.
     this.ctx.drawImage(flap ? this.pteroSprites.up : this.pteroSprites.down, x, y);
   }
 
+  _initPteroSprites() {
+    this.pteroSprites = {
+      up: document.createElement('canvas'),
+      down: document.createElement('canvas')
+    };
+    // Assuming pterodactyl sprite size is 70x40 based on original px calls
+    this.pteroSprites.up.width = 70;
+    this.pteroSprites.up.height = 40;
+    this.pteroSprites.down.width = 70;
+    this.pteroSprites.down.height = 40;
+
+    this._renderPteroSprite(true);  // Render 'up' flap
+    this._renderPteroSprite(false); // Render 'down' flap
+  }
+
+  _renderPteroSprite(flapUp) {
+    const canvas = flapUp ? this.pteroSprites.up : this.pteroSprites.down;
+    const ctx = canvas.getContext('2d');
+    // Temporarily reassign this.ctx to the sprite canvas context
+    const originalPx = this.px;
+    this.px = (x, y, w, h, color) => {
+      ctx.fillStyle = color;
+      ctx.fillRect(Math.round(x), Math.round(y), w, h);
+    };
+
+    // Original drawing logic, adjusted for sprite canvas coordinates (x=0, y=0)
+    const x = 0;
+    const y = 0;
+
+    // Outlines (Base shape drawn slightly larger and black)
+    this.px(x+22, y+14, 26, 22, '#1a1a1a'); // body
+    this.px(x+42, y+8,  22, 18, '#1a1a1a'); // head
+    this.px(x+56, y+10, 18, 10, '#1a1a1a'); // beak
+    
+    // Fill
+    this.px(x+24, y+16, 22, 18, '#2ecc71'); // body
+    this.px(x+44, y+10, 18, 14, '#27ae60'); // head
+    this.px(x+58, y+12, 14,  6, '#f1c40f'); // beak
+    
+    // Eye & Highlight
+    this.px(x+50, y+12,  4,  4, '#1a1a1a'); // eye
+    this.px(x+52, y+12,  2,  2, '#fff');    // eye glint
+    this.px(x+26, y+16, 16,  4, '#2ecc71'); // back highlight
+
+    // Wings with outline
+    if (flapUp) {
+      this.px(x-2, y-2, 30, 20, '#1a1a1a');
+      this.px(x+42, y-2, 28, 20, '#1a1a1a');
+      this.px(x,    y,    26, 16, '#27ae60'); // Left Wing
+      this.px(x+44, y,    24, 16, '#2ecc71'); // Right Wing
+    } else {
+      this.px(x-2, y+12, 30, 24, '#1a1a1a');
+      this.px(x+42, y+12, 28, 24, '#1a1a1a');
+      this.px(x,    y+14, 26, 20, '#27ae60');
+      this.px(x+44, y+14, 24, 20, '#2ecc71');
+    }
+
+    // Restore original px method
+    this.px = originalPx;
+  }
 
   _drawVolcano(x, y, w, h, frame) {
     // Base

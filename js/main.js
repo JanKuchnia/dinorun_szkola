@@ -50,6 +50,16 @@ class Game {
       e.target.textContent = on ? '🔊' : '🔇';
     });
 
+    // Info button
+    document.getElementById('btnInfo').addEventListener('click', () => {
+      document.getElementById('menuOverlay').style.display = 'none';
+      document.getElementById('infoOverlay').style.display = 'flex';
+    });
+    document.getElementById('btnInfoBack').addEventListener('click', () => {
+      document.getElementById('infoOverlay').style.display = 'none';
+      document.getElementById('menuOverlay').style.display = 'flex';
+    });
+
     // Leaderboard
     document.getElementById('btnLeaderboard').addEventListener('click', () => this._showLeaderboard());
     document.getElementById('btnGameOverLeaderboard').addEventListener('click', () => this._showLeaderboard(true));
