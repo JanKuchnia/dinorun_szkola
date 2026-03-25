@@ -9,6 +9,87 @@ class Renderer {
     this._flashFrames  = 0;
     this._flashColor   = 'rgba(255,255,255,0.5)';
     this._initSprites();
+    this._initPteroSprites();
+  }
+
+  _initPteroSprites() {
+    const upStr = `
+.....BBBBB.........................
+....B33333B........................
+...B3222222B.......................
+..B322222211B......................
+.B32222111111B.....................
+B3222111111111B...........BBBBBB...
+B322211111111111B........B333333B..
+B32221111111111111B......B322WW2B..
+B2211111111BB11111222B...B3222B22B.
+.B11111111B..BB1122222B.B32222222B.
+..BB11111B.....BB222222B22222222BBB
+....BB11B........B22222211111111YYB
+......BB...BBBBBBB11122211BBBBBBBBB
+..........B3222221111111BB.........
+..........B2222222111111B..........
+...........B2222B111111B...........
+............BBBB.B1111B............
+................B1111B.............
+.................BBBB..............
+...................................
+...................................
+...................................
+...................................
+`;
+    const downStr = `
+...................................
+...................................
+...................................
+...................................
+..........................BBBBBB...
+.........................B333333B..
+.........................B322WW2B..
+.........................B3222B22B.
+...............BBBBBBBBBB32222222B.
+..............B33333333332222222BBB
+.............B322222222211111111YYB
+............B3222221111111BBBBBBBBB
+...........B3222211111111B.........
+..........B3222111111111B..........
+.........B3222111111111B...........
+........B3222111111111B............
+.......B2211111111111B.............
+......B1111111111111B..............
+.....BB111111111111B...............
+....B1111111111111B................
+...BB111111111111B.................
+...BBBBBBBBBBBBBB..................
+...................................
+`;
+    this.pteroSprites = {
+      up: this._renderPteroSprite(upStr),
+      down: this._renderPteroSprite(downStr)
+    };
+  }
+
+  _renderPteroSprite(map) {
+    const c = document.createElement('canvas');
+    c.width  = 70;
+    c.height = 46;
+    const ctx = c.getContext('2d');
+    const pal = {
+      '.': null, 'B': '#1a1a1a', '1': '#1e8449',
+      '2': '#27ae60', '3': '#2ecc71', 'Y': '#f1c40f', 'W': '#ffffff'
+    };
+    const rows = map.trim().split('\n');
+    for (let r = 0; r < 23; r++) {
+      if (!rows[r]) continue;
+      for (let cCol = 0; cCol < 35; cCol++) {
+        const char = rows[r][cCol] || '.';
+        if (pal[char]) {
+          ctx.fillStyle = pal[char];
+          ctx.fillRect(cCol * 2, r * 2, 2, 2);
+        }
+      }
+    }
+    return c;
   }
 
   _initSprites() {
@@ -239,35 +320,9 @@ class Renderer {
 
   _drawPterodactyl(x, y, w, h, frame) {
     const flap = Math.sin(frame * 0.2) > 0;
-    
-    // Outlines (Base shape drawn slightly larger and black)
-    this.px(x+22, y+14, 26, 22, '#1a1a1a'); // body
-    this.px(x+42, y+8,  22, 18, '#1a1a1a'); // head
-    this.px(x+56, y+10, 18, 10, '#1a1a1a'); // beak
-    
-    // Fill
-    this.px(x+24, y+16, 22, 18, '#2ecc71'); // body
-    this.px(x+44, y+10, 18, 14, '#27ae60'); // head
-    this.px(x+58, y+12, 14,  6, '#f1c40f'); // beak
-    
-    // Eye & Highlight
-    this.px(x+50, y+12,  4,  4, '#1a1a1a'); // eye
-    this.px(x+52, y+12,  2,  2, '#fff');    // eye glint
-    this.px(x+26, y+16, 16,  4, '#2ecc71'); // back highlight
-
-    // Wings with outline
-    if (flap) {
-      this.px(x-2, y-2, 30, 20, '#1a1a1a');
-      this.px(x+42, y-2, 28, 20, '#1a1a1a');
-      this.px(x,    y,    26, 16, '#27ae60'); // Left Wing
-      this.px(x+44, y,    24, 16, '#2ecc71'); // Right Wing
-    } else {
-      this.px(x-2, y+12, 30, 24, '#1a1a1a');
-      this.px(x+42, y+12, 28, 24, '#1a1a1a');
-      this.px(x,    y+14, 26, 20, '#27ae60');
-      this.px(x+44, y+14, 24, 20, '#2ecc71');
-    }
+    this.ctx.drawImage(flap ? this.pteroSprites.up : this.pteroSprites.down, x, y);
   }
+
 
   _drawVolcano(x, y, w, h, frame) {
     // Base
