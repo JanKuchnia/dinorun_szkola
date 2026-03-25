@@ -268,9 +268,10 @@ B2211111111BB11111222B...B3222B22B.
     this.px(x+22, y+10, 26, 18, '#1a1a1a');
     this.px(x+38, y+16, 16, 30, '#1a1a1a');
 
-    // Fill
+    // Fill & Layers for depth
     this.px(x,    y+14, 22, 30, '#7f8c8d');
     this.px(x+4,  y+8,  18, 14, '#95a5a6');
+    this.px(x+2,  y+10, 14, 10, '#bdc3c7'); // Inner light layer
     this.px(x+20, y+20, 26, 24, '#6c7a7d');
     this.px(x+24, y+12, 22, 14, '#8a9a9d');
     this.px(x+40, y+18, 12, 26, '#5d6d7e');
@@ -280,6 +281,11 @@ B2211111111BB11111222B...B3222B22B.
     this.px(x+4,  y+8,   8, 4, '#d0d3d4');
     this.px(x+20, y+20, 12, 4, '#aab7b8');
     this.px(x+24, y+12, 10, 4, '#bdc3c7');
+    this.px(x+40, y+18, 6,  4, '#7f8c8d');
+
+    // Texture/Cracks
+    this.px(x+10, y+20, 2, 8, '#5d6d7e');
+    this.px(x+30, y+24, 6, 2, '#34495e');
 
     // Shadows (bottom/right)
     this.px(x+14, y+34,  8, 10, '#5d6d7e');
@@ -296,16 +302,19 @@ B2211111111BB11111222B...B3222B22B.
     this.px(x,   y+10, 12,  h-10, '#e67e22'); // left cut face
     this.px(x+w-16, y+10, 16, h-10, '#5c2d0c'); // right shadow
     
+    // Wood Face Detail (rings)
+    this.px(x+2, y+14, 8, 2, '#d35400');
+    this.px(x+4, y+20, 4, 4, '#d35400');
+    
     // Highlight
     this.px(x+12, y+10, w-28, 4, '#d35400');   
+    this.px(x+14, y+10, w-32, 2, '#e67e22'); // brighter rim
     
-    // Bark rings / grains
+    // Bark grains (more detailed)
     this.px(x+16, y+16, w-36, 2, '#5c2d0c');
     this.px(x+24, y+22, w-40, 2, '#5c2d0c');
     this.px(x+12, y+28, w-32, 2, '#5c2d0c');
-    
-    // Face spiral
-    this.px(x+4, y+14, 4, 4, '#a04000');
+    this.px(x+30, y+18, 4, 4, '#5c2d0c'); // knot
   }
 
   _drawTar(x, y, w, h, frame) {
@@ -358,26 +367,32 @@ B2211111111BB11111222B...B3222B22B.
     this.px(x+56, y+10, 18, 10, '#1a1a1a'); // beak
     
     // Fill
-    this.px(x+24, y+16, 22, 18, '#2ecc71'); // body
-    this.px(x+44, y+10, 18, 14, '#27ae60'); // head
-    this.px(x+58, y+12, 14,  6, '#f1c40f'); // beak
+    this.px(x+24, y+16, 22, 18, '#2ecc71'); // body base
+    this.px(x+26, y+18, 18, 10, '#58d68d'); // body highlight
+    this.px(x+44, y+10, 18, 14, '#27ae60'); // head base
+    this.px(x+46, y+12, 12,  6, '#2ecc71'); // head highlight
+    this.px(x+58, y+12, 14,  6, '#f1c40f'); // beak base
+    this.px(x+60, y+12,  8,  2, '#f7dc6f'); // beak highlight
     
     // Eye & Highlight
     this.px(x+50, y+12,  4,  4, '#1a1a1a'); // eye
     this.px(x+52, y+12,  2,  2, '#fff');    // eye glint
-    this.px(x+26, y+16, 16,  4, '#2ecc71'); // back highlight
 
-    // Wings with outline
+    // Wings with outline & shading
     if (flapUp) {
       this.px(x-2, y-2, 30, 20, '#1a1a1a');
       this.px(x+42, y-2, 28, 20, '#1a1a1a');
-      this.px(x,    y,    26, 16, '#27ae60'); // Left Wing
-      this.px(x+44, y,    24, 16, '#2ecc71'); // Right Wing
+      this.px(x,    y,    26, 16, '#27ae60'); // Left Wing base
+      this.px(x+2,  y+2,  20,  8, '#2ecc71'); // Left Wing highlight
+      this.px(x+44, y,    24, 16, '#2ecc71'); // Right Wing base
+      this.px(x+46, y+2,  18,  8, '#58d68d'); // Right Wing highlight
     } else {
       this.px(x-2, y+12, 30, 24, '#1a1a1a');
       this.px(x+42, y+12, 28, 24, '#1a1a1a');
-      this.px(x,    y+14, 26, 20, '#27ae60');
-      this.px(x+44, y+14, 24, 20, '#2ecc71');
+      this.px(x,    y+14, 26, 20, '#27ae60'); // Left Wing base
+      this.px(x+2,  y+16, 20, 12, '#1d8348'); // Left Wing shadow
+      this.px(x+44, y+14, 24, 20, '#2ecc71'); // Right Wing base
+      this.px(x+46, y+16, 18, 12, '#27ae60'); // Right Wing shadow
     }
 
     // Restore original px method
@@ -385,51 +400,60 @@ B2211111111BB11111222B...B3222B22B.
   }
 
   _drawVolcano(x, y, w, h, frame) {
-    // Base
+    // Outline
+    this.px(x-2, y+h/2-2, w+4,  h/2+4,  '#1a1a1a');
+    this.px(x+6, y+h/3-2, w-12, h*2/3+4, '#1a1a1a');
+    this.px(x+14, y+6,    w-28, h*0.7+4, '#1a1a1a');
+
+    // Base (Mountain)
     this.px(x,    y+h/2, w,   h/2, '#7f3b08');
     this.px(x+8,  y+h/3, w-16, h*2/3, '#9c4a1a');
     this.px(x+16, y+8,   w-32, h*0.7, '#b05a2a');
+    this.px(x+18, y+10,  w-36, h*0.5, '#d35400'); // brighter ridge
+    
     // Crater
     this.px(x+20, y+4,   w-40, 12, '#3d1f00');
-    // Lava glow
+    
+    // Lava glow with pulsing intensity
     const g = Math.abs(Math.sin(frame * 0.08));
-    this.ctx.fillStyle = `rgba(255,${Math.round(80+g*80)},0,0.85)`;
-    this.ctx.fillRect(x+24, y+6, w-48, 8);
+    this.ctx.fillStyle = `rgba(255,${Math.round(80+g*80)},0,${0.7 + g*0.3})`;
+    this.ctx.fillRect(x+22, y+6, w-44, 10);
+    this.px(x+24, y+6, w-48, 4, '#ffffff'); // bright lava core
+    
     // Lava drips
-    if (frame % 20 < 10) {
-      this.px(x+28, y+14, 6, 10, '#ff5500');
+    if (frame % 30 < 15) {
+      this.px(x+28, y+14, 6, 12, '#ff5500');
+      this.px(x+30, y+18, 2, 4,  '#ffcc00');
     }
-    if ((frame+10) % 20 < 10) {
-      this.px(x+38, y+14, 6, 8, '#ff7700');
+    if ((frame+15) % 30 < 15) {
+      this.px(x+38, y+14, 6, 10, '#ff7700');
     }
   }
 
   _drawBones(x, y, w, h) {
-    // Outline
-    this.px(x-2, y+4, 16, 20, '#1a1a1a');
-    this.px(x+w-14, y+4, 16, 20, '#1a1a1a');
-    this.px(x-2, y+16, 14, 18, '#1a1a1a');
-    this.px(x+w-14, y+16, 14, 18, '#1a1a1a');
-    this.px(x-2, y+8, w+4, 12, '#1a1a1a');
-    this.px(x-2, y+20, w+4, 10, '#1a1a1a');
+    // Outer Outline
+    this.px(x-2, y+2, w+4, h+4, '#1a1a1a');
 
-    // horizontal bone
+    // horizontal bone main
     this.px(x+6,  y+10, w-12, 8, '#fff');
     this.px(x+6,  y+14, w-12, 4, '#e0e0e0'); // shadow strip
+    this.px(x+8,  y+10, w-16, 2, '#f5f5f5'); // highlight top
 
-    // end knobs
-    this.px(x,    y+6,  12,  16, '#fff');
-    this.px(x+w-12, y+6, 12, 16, '#fff');
+    // end knobs (top)
+    this.px(x,    y+4,  12,  16, '#fff');
+    this.px(x+w-12, y+4, 12, 16, '#fff');
+    this.px(x+2,  y+4,   4,   4, '#f5f5f5'); // knob glint
+    this.px(x+w-10, y+4,  4,   4, '#f5f5f5');
+
+    // second bone (angled look)
+    this.px(x+4,  y+20, w-8,  8, '#fff');
+    this.px(x+4,  y+24, w-8,  4, '#d0d0d0'); // deep shadow
+    this.px(x+2,  y+16, 10,  14, '#fff');
+    this.px(x+w-12, y+16, 10, 14, '#fff');
     
-    // second bone (angled via separate rect)
-    this.px(x+4,  y+22, w-8,  6, '#fff');
-    this.px(x+2,  y+18, 10,  14, '#fff');
-    this.px(x+w-12, y+18, 10, 14, '#fff');
-    
-    // bottom shadows of knobs
+    // bottom knobs depth
     this.px(x,    y+18, 12,   4, '#e0e0e0');
     this.px(x+w-12, y+18, 12, 4, '#e0e0e0');
-    this.px(x+2,  y+28, 10,   4, '#e0e0e0');
   }
 
   // ── Collectibles ───────────────────────────────────────────────────────────
@@ -447,57 +471,84 @@ B2211111111BB11111222B...B3222B22B.
   }
 
   _drawEgg(x, y, w, h, c1, c2) {
-    this.px(x+4,  y,   w-8, 6,   c1);
-    this.px(x+2,  y+6, w-4, 12,  c1);
-    this.px(x,    y+18, w,   8,   c2);
+    this.px(x,   y+6,  w,   18, '#1a1a1a'); // outline
+    this.px(x+4, y,    w-8, 28, '#1a1a1a'); // outline
+    
+    this.px(x+4,  y+2,  w-8, 6,   c1);
+    this.px(x+2,  y+8,  w-4, 12,  c1);
+    this.px(x+6,  y+4,  4,   4,   '#fff'); // glint
+    this.px(x,    y+20, w,   8,   c2);
     this.px(x+2,  y+26, w-4, 4,   c2);
   }
 
   _drawCoins(x, y, w, h) {
-    const cx = [[0,0], [16,2], [28,-2]];
+    const cx = [[0,0], [16,4], [28,-2]];
     for (const [dx, dy] of cx) {
+      this.px(x+dx-2, y+dy,   12, 10, '#1a1a1a'); // outline
       this.px(x+dx+2, y+dy,   8,  2, '#ffd700');
       this.px(x+dx,   y+dy+2, 12, 4, '#ffd700');
+      this.px(x+dx,   y+dy+4, 12, 2, '#f1c40f'); // side edge
       this.px(x+dx+2, y+dy+6,  8,  2, '#b8860b');
-      this.px(x+dx+4, y+dy+2,  4,  4, '#fff176');  // shine
+      this.px(x+dx+3, y+dy+2,  2,  2, '#ffffff');  // sparkle
     }
   }
 
   _drawWings(x, y, w, h, frame) {
     const flap = Math.sin(frame * 0.15) * 4;
-    this.px(x,    y+flap, 14, 10, '#bdc3c7');
-    this.px(x,    y+flap+8, 10, 12, '#ecf0f1');
-    this.px(x+18, y+flap, 14, 10, '#bdc3c7');
-    this.px(x+18, y+flap+8, 10, 12, '#ecf0f1');
-    this.px(x+13, y+4,     6,  18, '#7f8c8d');  // center quill
+    // Wing outlines
+    this.px(x-2,  y+flap-2, 18, 14, '#2c3e50');
+    this.px(x+16, y+flap-2, 18, 14, '#2c3e50');
+    
+    // Fletching (feathers)
+    this.px(x,    y+flap, 14, 10, '#ecf0f1'); // Light top
+    this.px(x+2,  y+flap+4, 10, 8, '#bdc3c7'); // Shaded middle
+    this.px(x+18, y+flap, 14, 10, '#ecf0f1');
+    this.px(x+20, y+flap+4, 10, 8, '#bdc3c7');
+    
+    // Quills / Detail
+    this.px(x+4,  y+flap+2, 6, 2, '#7f8c8d');
+    this.px(x+22, y+flap+2, 6, 2, '#7f8c8d');
+    
+    this.px(x+13, y+2, 6, 22, '#34495e'); // center bar
   }
 
   _drawStar(x, y, w, h, frame) {
     const glow = Math.abs(Math.sin(frame * 0.1));
     this.ctx.fillStyle = `rgba(255,220,0,${0.3 + glow * 0.4})`;
-    this.ctx.fillRect(x-4, y-4, w+8, h+8);
-    // star shape via pixel blocks
-    this.px(x+12, y,    6, 30, '#f1c40f');  // vertical bar
-    this.px(x,    y+12, 30,  6, '#f1c40f'); // horizontal bar
-    this.px(x+4,  y+4,  6,  6, '#f1c40f');  // corners
-    this.px(x+20, y+4,  6,  6, '#f1c40f');
-    this.px(x+4,  y+20, 6,  6, '#f1c40f');
-    this.px(x+20, y+20, 6,  6, '#f1c40f');
+    this.ctx.fillRect(x-6, y-6, w+12, h+12);
+    
+    this.px(x+4,  y+4,   w-8,  h-8,  '#1a1a1a'); // core outline
+    
+    // complex star shape
+    this.px(x+12, y,    6, 30, '#f1c40f');  // vertical
+    this.px(x,    y+12, 30,  6, '#f1c40f'); // horizontal
+    this.px(x+6,  y+6,  18, 18, '#f1c40f'); // bulk
+    
+    this.px(x+13, y+2,  4,  26, '#ffffff'); // bright cross highlight
+    this.px(x+2,  y+13, 26,  4,  '#ffffff');
+    
+    this.px(x+8,  y+8,  2, 2, '#fff'); // glint
+    this.px(x+20, y+20, 2, 2, '#fff');
   }
 
   _drawShield(x, y, w, h, frame) {
     const glow = Math.abs(Math.sin(frame * 0.1));
     this.ctx.fillStyle = `rgba(52,152,219,${0.15 + glow * 0.25})`;
-    this.ctx.fillRect(x-2, y-2, w+4, h+4);
-    // shield shape
-    this.px(x+2,  y,    w-4, 4, '#7fb3d3');
-    this.px(x,    y+4,  w,   18, '#3498db');
-    this.px(x+2,  y+22, w-4, 6, '#2980b9');
-    this.px(x+6,  y+28, w-12, 4, '#2471a3');
-    this.px(x+10, y+30, 8,   2, '#1a5276');
-    // cross emblem
-    this.px(x+12, y+8,  4,  14, '#ecf0f1');
-    this.px(x+7,  y+13, 14,  4,  '#ecf0f1');
+    this.ctx.fillRect(x-4, y-4, w+8, h+8);
+    
+    this.px(x-2,  y,    w+4,  32, '#1a1a1a'); // outline
+    
+    // shield shape (beveled)
+    this.px(x+2,  y+2,  w-4, 28, '#3498db');
+    this.px(x+4,  y+4,  w-8, 24, '#5dade2'); // highlight surface
+    this.px(x+2,  y+2,  w-4, 4,  '#85c1e9'); // top bevel
+    this.px(x+2,  y+24, w-4, 6,  '#2874a6'); // bottom shadow
+    
+    // cross emblem with depth
+    this.px(x+12, y+8,  6,  16, '#1a1a1a'); // emblem outline
+    this.px(x+7,  y+13, 16,  6,  '#1a1a1a');
+    this.px(x+14, y+10, 2,  12, '#ffffff'); // emblem fill
+    this.px(x+9,  y+15, 12,  2,  '#ffffff');
   }
 
   // ── Particles ──────────────────────────────────────────────────────────────
