@@ -34,6 +34,7 @@ const COLLECTIBLE_CHANCE  = 0.003; // per-frame chance to spawn (during game)
 // Power-up durations (ms)
 const WINGS_DURATION  = 10000;
 const STAR_DURATION   = 8000;
+const SHIELD_DURATION = 10000;
 
 // Ground
 const GROUND_HEIGHT   = 14;

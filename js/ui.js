@@ -59,7 +59,7 @@ class UI {
       px -= 60;
     }
     if (player.powerups.shield) {
-      this._drawPowerupBar(px, 12, '#3498db', 1, '⛊');
+      this._drawPowerupBar(px, 12, '#3498db', player.shieldRatio, '⛊');
     }
 
     // Floating popups
@@ -94,7 +94,9 @@ class UI {
 
   drawSpeedIndicator(gameSpeed) {
     const ctx   = this.ctx;
-    const level = Math.floor((gameSpeed - SPEED_INITIAL) / (SPEED_MAX - SPEED_INITIAL) * 10);
+    // Map speed 6 -> 18 to progress 0% -> 100%
+    const progress = Math.max(0, Math.min(1, (gameSpeed - SPEED_INITIAL) / (SPEED_MAX - SPEED_INITIAL)));
+    const percentage = Math.floor(progress * 100);
     
     // Label wrapper
     ctx.fillStyle = 'rgba(0,0,0,0.55)';
@@ -105,7 +107,7 @@ class UI {
     // Text
     ctx.fillStyle = '#fff';
     ctx.font      = '10px "Silkscreen", monospace';
-    ctx.fillText(`PRĘDKOŚĆ: ${Math.min(level, 10)}`, 22, 87);
+    ctx.fillText(`PRĘDKOŚĆ: ${percentage}%`, 22, 87);
 
     // Mini bar next to it
     ctx.fillStyle = 'rgba(255,255,255,0.2)';
@@ -113,10 +115,10 @@ class UI {
     ctx.roundRect(170, 76, 90, 12, 4);
     ctx.fill();
 
-    if (level > 0) {
+    if (progress > 0) {
       ctx.fillStyle = '#e74c3c';
       ctx.beginPath();
-      ctx.roundRect(170, 76, Math.round(Math.min(level, 10) / 10 * 90), 12, 4);
+      ctx.roundRect(170, 76, Math.round(progress * 90), 12, 4);
       ctx.fill();
     }
   }

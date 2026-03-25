@@ -11,7 +11,7 @@ class CollectibleManager {
     this._frame = 0;
   }
 
-  update(gameSpeed, score, dt = 16.666) {
+  update(gameSpeed, score, dt = 16.666, obstacles = []) {
     const timeScale = dt / 16.666;
     const frameSpeed = gameSpeed * timeScale;
     this._frame += timeScale;
@@ -28,11 +28,11 @@ class CollectibleManager {
     // Random spawn — higher score = slightly more collectibles
     const chance = COLLECTIBLE_CHANCE * (1 + score / 5000) * timeScale;
     if (Math.random() < chance) {
-      this._spawn(score);
+      this._spawn(score, obstacles);
     }
   }
 
-  _spawn(score) {
+  _spawn(score, obstacles) {
     // Weight: regular collectibles more likely than power-ups
     const weights = [30, 10, 20, 8, 6, 6]; // egg, golden_egg, coins, wings, star, shield
     const total   = weights.reduce((a, b) => a + b, 0);
@@ -44,6 +44,14 @@ class CollectibleManager {
     }
 
     const type = COLLECTIBLE_TYPES[idx];
+
+    // Prevent spawning inside an obstacle
+    const isOverlapping = obstacles.some(obs => {
+      if (!obs.active) return false;
+      const distX = Math.abs(obs.x - (CANVAS_WIDTH + 10));
+      return distX < 70; // 70px safe zone
+    });
+    if (isOverlapping) return;
 
     const isAerial = ['wings', 'star', 'shield'].includes(type.id);
     const y = isAerial

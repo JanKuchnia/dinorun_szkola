@@ -60,9 +60,17 @@ class ObstacleManager {
   }
 
   _addObstacle(type, xOffset = 0) {
-    const y = type.aerial
-      ? GROUND_Y - type.h - 50 - Math.random() * 40  // fly height varies
-      : GROUND_Y - type.h;
+    let y = GROUND_Y - type.h;
+    if (type.aerial) {
+      const rand = Math.random();
+      if (rand < 0.33) {
+        y = GROUND_Y - type.h - 15; // Low (must jump)
+      } else if (rand < 0.66) {
+        y = GROUND_Y - type.h - 35; // Mid (must duck)
+      } else {
+        y = GROUND_Y - type.h - 60; // High (avoid jumping)
+      }
+    }
 
     const obs = this.obstacles.find(o => !o.active);
     if (obs) {

@@ -11,6 +11,9 @@ class Player {
     this.state    = 'RUNNING'; // RUNNING | JUMPING | DOUBLE_JUMPING | DUCKING | HIT
     this.frame    = 0;
     this.skinIndex = 0;
+    this._wingsDuration  = 0;
+    this._starDuration   = 0;
+    this._shieldDuration = 0;
     this._doubleJumpUsed = false;
     this._slowTimer = 0;  // frames of slowdown from tar
     this._invulnerableTimer = 0; // frames of invulnerability after shield break
@@ -21,8 +24,6 @@ class Player {
       star:   false,
       shield: false,
     };
-    this._wingsDuration  = 0;
-    this._starDuration   = 0;
   }
 
   reset() {
@@ -59,6 +60,7 @@ class Player {
         break;
       case 'shield':
         this.powerups.shield = true;
+        this._shieldDuration = SHIELD_DURATION;
         break;
     }
   }
@@ -80,17 +82,33 @@ class Player {
   get isSlowed() { return this._slowTimer > 0; }
 
   update(input, dt) {
-    // Power-up timers
+    // Power-up timers (subtracting explicit milliseconds)
     if (this.powerups.wings) {
       this._wingsDuration -= dt;
-      if (this._wingsDuration <= 0) this.powerups.wings = false;
+      if (this._wingsDuration <= 0) {
+        this.powerups.wings = false;
+        this._wingsDuration = 0;
+      }
     }
     if (this.powerups.star) {
       this._starDuration -= dt;
-      if (this._starDuration <= 0) this.powerups.star = false;
+      if (this._starDuration <= 0) {
+        this.powerups.star = false;
+        this._starDuration = 0;
+      }
     }
-    if (this._slowTimer > 0) this._slowTimer--;
-    if (this._invulnerableTimer > 0) this._invulnerableTimer--;
+    if (this.powerups.shield) {
+      this._shieldDuration -= dt;
+      if (this._shieldDuration <= 0) {
+        this.powerups.shield = false;
+        this._shieldDuration = 0;
+      }
+    }
+
+    // Still scaling logical frames for invulnerability and slowdown
+    const timeScale = dt / 16.666;
+    if (this._slowTimer > 0) this._slowTimer -= timeScale;
+    if (this._invulnerableTimer > 0) this._invulnerableTimer -= timeScale;
 
     // Ducking
     if (input.isDucking() && this.onGround) {
@@ -138,6 +156,7 @@ class Player {
   }
 
   // Power-up remaining ratios for HUD
-  get wingRatio()  { return this._wingsDuration / WINGS_DURATION; }
-  get starRatio()  { return this._starDuration  / STAR_DURATION; }
+  get wingRatio() { return Math.max(0, this._wingsDuration / WINGS_DURATION); }
+  get starRatio() { return Math.max(0, this._starDuration / STAR_DURATION); }
+  get shieldRatio() { return Math.max(0, this._shieldDuration / SHIELD_DURATION); }
 }

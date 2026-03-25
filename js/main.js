@@ -262,7 +262,7 @@ class Game {
 
     this.obstacles.setGap(this.score);
     this.obstacles.update(effectiveSpeed, this.score, dt);
-    this.collectibles.update(effectiveSpeed, this.score, dt);
+    this.collectibles.update(effectiveSpeed, this.score, dt, this.obstacles.obstacles);
     this.particles.update(dt);
     this.ui.updatePopups();
 
