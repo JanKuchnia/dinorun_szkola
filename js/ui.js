@@ -96,7 +96,9 @@ class UI {
     const ctx   = this.ctx;
     // Map speed 6 -> 18 to progress 0% -> 100%
     const progress = Math.max(0, Math.min(1, (gameSpeed - SPEED_INITIAL) / (SPEED_MAX - SPEED_INITIAL)));
-    const percentage = Math.floor(progress * 100);
+    
+    // Convert arbitrary gameSpeed to simulated m/s (assuming 40px = 1 meter, 60fps)
+    const msValue = (gameSpeed * 1.5).toFixed(1);
     
     // Label wrapper
     ctx.fillStyle = 'rgba(0,0,0,0.55)';
@@ -107,7 +109,7 @@ class UI {
     // Text
     ctx.fillStyle = '#fff';
     ctx.font      = '10px "Silkscreen", monospace';
-    ctx.fillText(`PRĘDKOŚĆ: ${percentage}%`, 22, 87);
+    ctx.fillText(`PRĘDKOŚĆ: ${msValue} m/s`, 22, 87);
 
     // Mini bar next to it
     ctx.fillStyle = 'rgba(255,255,255,0.2)';

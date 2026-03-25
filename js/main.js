@@ -166,7 +166,21 @@ class Game {
     `).join('');
   }
 
+  _requestFullscreen() {
+    if (window.innerWidth <= 768 || ('ontouchstart' in window)) {
+      const el = document.documentElement;
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else if (el.msRequestFullscreen) {
+        el.msRequestFullscreen();
+      }
+    }
+  }
+
   _startGame() {
+    this._requestFullscreen();
     this.state     = GameState.PLAYING;
     this.score     = 0;
     this.gameSpeed = SPEED_INITIAL;

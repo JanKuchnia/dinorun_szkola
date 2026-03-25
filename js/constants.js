@@ -12,8 +12,8 @@ const PLAYER_X        = 110;  // fixed horizontal position of player
 // Speed
 const SPEED_INITIAL   = 6;
 const SPEED_MAX       = 18;
-const SPEED_INCREMENT = 0.4;   // added every SPEED_SCORE_INTERVAL points
-const SPEED_SCORE_INTERVAL = 400;
+const SPEED_INCREMENT = 0.15;  // added every SPEED_SCORE_INTERVAL points
+const SPEED_SCORE_INTERVAL = 100;
 
 // Scoring
 const SCORE_PER_FRAME     = 0.1;
