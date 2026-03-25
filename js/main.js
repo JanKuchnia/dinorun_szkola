@@ -124,6 +124,7 @@ class Game {
   }
 
   _goToSkinSelect() {
+    this._requestFullscreen(); // Trigger fullscreen earlier
     this.state = GameState.SKIN_SELECT;
     document.getElementById('menuOverlay').style.display     = 'none';
     document.getElementById('skinOverlay').style.display     = 'flex';

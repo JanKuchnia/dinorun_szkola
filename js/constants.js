@@ -12,14 +12,18 @@ const PLAYER_X        = 110;  // fixed horizontal position of player
 // Speed
 const SPEED_INITIAL   = 6;
 const SPEED_MAX       = 18;
-const SPEED_INCREMENT = 0.15;  // added every SPEED_SCORE_INTERVAL points
-const SPEED_SCORE_INTERVAL = 100;
+const SPEED_INCREMENT = 0.35;  // added every SPEED_SCORE_INTERVAL points
+const SPEED_SCORE_INTERVAL = 50;
 
 // Scoring
 const SCORE_PER_FRAME     = 0.1;
 const EGG_SCORE           = 10;
 const GOLDEN_EGG_SCORE    = 50;
 const COIN_SCORE          = 25;
+
+// Spawning
+const OBSTACLE_SPAWN_MIN  = 45;
+const OBSTACLE_SPAWN_MAX  = 110;
 
 // Obstacle settings
 const OBSTACLE_MIN_GAP    = 700;   // px between obstacles at start
