@@ -96,25 +96,29 @@ B2211111111BB11111222B...B3222B22B.
     this.sprites = {};
     for (let i = 0; i < SKINS.length; i++) {
         const skinInfo = SKINS[i];
-        const template = skinInfo.id === 'dino' ? SPRITE_MAPS.dino : SPRITE_MAPS.human;
+        const template = SPRITE_MAPS[skinInfo.id] || SPRITE_MAPS.human;
         this.sprites[i] = {
-           run1: this._renderSpriteMap(template.run1, skinInfo.colors),
-           run2: this._renderSpriteMap(template.run2, skinInfo.colors),
-           duck: this._renderSpriteMap(template.duck, skinInfo.colors)
+           run1: this._renderSpriteMap(template.run1, skinInfo.colors, skinInfo.w, skinInfo.h),
+           run2: this._renderSpriteMap(template.run2, skinInfo.colors, skinInfo.w, skinInfo.h),
+           duck: this._renderSpriteMap(template.duck, skinInfo.colors, skinInfo.w, skinInfo.duckH)
         };
     }
   }
 
-  _renderSpriteMap(map, colors) {
+  _renderSpriteMap(map, colors, targetW, targetH) {
     const c = document.createElement('canvas');
-    c.width = PLAYER_W;
-    c.height = PLAYER_H;
+    c.width = targetW;
+    c.height = targetH;
     const ctx = c.getContext('2d');
     
-    for (let row = 0; row < 18; row++) {
-      if (!map[row]) continue;
-      for (let col = 0; col < 14; col++) {
-        const char = map[row][col] || ' ';
+    const rows = map.length;
+    const cols = map[0].length;
+    const pxW = targetW / cols;
+    const pxH = targetH / rows;
+    
+    for (let r = 0; r < rows; r++) {
+      for (let col = 0; col < cols; col++) {
+        const char = map[r][col] || ' ';
         if (char === ' ') continue;
         
         let fill = '';
@@ -130,7 +134,7 @@ B2211111111BB11111222B...B3222B22B.
         }
         if (fill) {
            ctx.fillStyle = fill;
-           ctx.fillRect(col * 4, row * 4, 4, 4);
+           ctx.fillRect(col * pxW, r * pxH, Math.ceil(pxW), Math.ceil(pxH));
         }
       }
     }
@@ -203,7 +207,7 @@ B2211111111BB11111222B...B3222B22B.
     if (isDucking) {
       const sprite = this.sprites[skinIndex].duck;
       // duck sprite is drawn at ground level
-      ctx.drawImage(sprite, x, y + h - PLAYER_DUCK_H - (PLAYER_H - PLAYER_DUCK_H));
+      ctx.drawImage(sprite, x, y);
     } else {
       const legCycle = Math.floor(frame * 0.15) % 2 === 0;
       const sprite = legCycle ? this.sprites[skinIndex].run1 : this.sprites[skinIndex].run2;

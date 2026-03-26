@@ -2,15 +2,16 @@
 
 class Player {
   constructor() {
+    this.skinIndex = 0;
+    const skin = SKINS[this.skinIndex];
     this.x   = PLAYER_X;
-    this.y   = GROUND_Y - PLAYER_H;
-    this.w   = PLAYER_W;
-    this.h   = PLAYER_H;
+    this.w   = skin.w;
+    this.h   = skin.h;
+    this.y   = GROUND_Y - this.h;
     this.vy  = 0;
     this.onGround = true;
     this.state    = 'RUNNING'; // RUNNING | JUMPING | DOUBLE_JUMPING | DUCKING | HIT
     this.frame    = 0;
-    this.skinIndex = 0;
     this._wingsDuration  = 0;
     this._starDuration   = 0;
     this._shieldDuration = 0;
@@ -27,7 +28,10 @@ class Player {
   }
 
   reset() {
-    this.y   = GROUND_Y - PLAYER_H;
+    const skin = SKINS[this.skinIndex];
+    this.w   = skin.w;
+    this.h   = skin.h;
+    this.y   = GROUND_Y - this.h;
     this.vy  = 0;
     this.onGround = true;
     this.state    = 'RUNNING';
@@ -40,12 +44,27 @@ class Player {
     this._starDuration  = 0;
   }
 
-  // hitbox (inset slightly for fairness)
+  // hitbox (using skin-specific offsets)
   get hitbox() {
+    const skin = SKINS[this.skinIndex];
     if (this.state === 'DUCKING') {
-      return { x: this.x + 8, y: this.y + this.h - PLAYER_DUCK_H + 6, w: this.w - 16, h: PLAYER_DUCK_H - 12 };
+      const d = skin.duckHit;
+      // Adjust y position for ducking height
+      const duckY = this.y + (this.h - skin.duckH);
+      return { 
+        x: this.x + d.x, 
+        y: duckY + d.y, 
+        w: d.w, 
+        h: d.h 
+      };
     }
-    return { x: this.x + 10, y: this.y + 6, w: this.w - 20, h: this.h - 12 };
+    const h = skin.hit;
+    return { 
+      x: this.x + h.x, 
+      y: this.y + h.y, 
+      w: h.w, 
+      h: h.h 
+    };
   }
 
   applyPowerup(id) {
@@ -115,6 +134,13 @@ class Player {
       this.state = 'DUCKING';
     } else if (this.onGround && this.state === 'DUCKING' && !input.isDucking()) {
       this.state = 'RUNNING';
+    }
+
+    const skin = SKINS[this.skinIndex];
+    if (this.state === 'DUCKING') {
+      this.h = skin.duckH;
+    } else {
+      this.h = skin.h;
     }
 
     // Jump
